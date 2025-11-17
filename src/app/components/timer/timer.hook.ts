@@ -1,10 +1,12 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import type { TimerConfig } from "@/app/components";
 
-export function useTimer(initialDuration: number) {
-  const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const [duration, setDuration] = useState<number>(initialDuration);
+export function useTimer(timerConfig: TimerConfig, shouldStartPlaying = false) {
+  const [isFinished, setIsFinished] = useState<boolean>(false);
+  const [isPlaying, setIsPlaying] = useState<boolean>(shouldStartPlaying);
+  const [duration, setDuration] = useState<number>(timerConfig.initialDuration);
   const [resetOrRestartToggle, setResetOrRestartToggle] =
     useState<boolean>(false);
   const [toggleRestartInterval, setToggleRestartInterval] =
@@ -19,6 +21,7 @@ export function useTimer(initialDuration: number) {
       setDuration((previousTimeLeft) => {
         if (previousTimeLeft <= 1) {
           clearInterval(interval);
+          setIsFinished(true);
           setIsPlaying(false);
           return 0;
         }
@@ -38,20 +41,21 @@ export function useTimer(initialDuration: number) {
   }, []);
 
   const reset = useCallback(() => {
-    setDuration(initialDuration);
+    setDuration(timerConfig.initialDuration);
     setIsPlaying(false);
     setResetOrRestartToggle((prev) => !prev);
-  }, [initialDuration]);
+  }, [timerConfig.initialDuration]);
 
   const restart = useCallback(() => {
-    setDuration(initialDuration);
+    setDuration(timerConfig.initialDuration);
     setIsPlaying(true);
     setResetOrRestartToggle((prev) => !prev);
     setToggleRestartInterval((prev) => !prev);
-  }, [initialDuration]);
+  }, [timerConfig.initialDuration]);
 
   return {
     duration,
+    isFinished,
     isPlaying,
     resetOrRestartToggle,
     pause,

@@ -1,37 +1,47 @@
+"use client";
+
 import { Box } from "@mui/material";
-import type { Property } from "csstype";
 import {
+  type TimerConfig,
   formatDuration,
+  pickTimerColor,
   TimerActions,
   TimerDuration,
   TimerTitle,
+  useTimer,
 } from "@/app/components";
+import { useEffect } from "react";
 
 type TimerProps = {
-  backgroundColor: Property.BackgroundColor;
-  duration: number;
-  initialDuration: number;
-  isPlaying: boolean;
-  resetOrRestartToggle: boolean;
-  title: string;
-  pause(): void;
-  play(): void;
-  reset(): void;
-  restart(): void;
+  shouldStartPlaying: boolean;
+  timerConfig: TimerConfig;
+  onTimerFinished(): void;
 };
 
 export function Timer({
-  backgroundColor,
-  duration,
-  initialDuration,
-  isPlaying,
-  resetOrRestartToggle,
-  title,
-  pause,
-  play,
-  reset,
-  restart,
+  shouldStartPlaying,
+  timerConfig,
+  onTimerFinished,
 }: TimerProps) {
+  const {
+    duration,
+    isFinished,
+    isPlaying,
+    resetOrRestartToggle,
+    pause,
+    play,
+    reset,
+    restart,
+  } = useTimer(timerConfig, shouldStartPlaying);
+
+  useEffect(() => {
+    if (isFinished) {
+      onTimerFinished();
+    }
+  }, [isFinished, onTimerFinished]);
+
+  const backgroundColor = pickTimerColor();
+
   return (
     <Box
       sx={{
@@ -53,7 +63,7 @@ export function Timer({
             "0%": { transform: "translateX(-100%)" },
             "100%": { transform: "translateX(0%)" },
           },
-          animation: `timer-move ${initialDuration}s linear forwards`,
+          animation: `timer-move ${timerConfig.initialDuration}s linear forwards`,
           animationPlayState: isPlaying ? "running" : "paused",
           backgroundColor,
           height: "100%",
@@ -85,7 +95,9 @@ export function Timer({
           <TimerDuration backgroundColor={backgroundColor}>
             {formatDuration(duration)}
           </TimerDuration>
-          <TimerTitle backgroundColor={backgroundColor}>{title}</TimerTitle>
+          <TimerTitle backgroundColor={backgroundColor}>
+            {timerConfig.title}
+          </TimerTitle>
         </Box>
         <TimerActions
           backgroundColor={backgroundColor}

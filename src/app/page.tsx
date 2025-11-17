@@ -1,31 +1,14 @@
-"use client";
-
-import { pickTimerColor, Timer, useTimer } from "@/app/components";
+import { randomUUID } from "node:crypto";
+import { Timers } from "@/app/components";
 
 export default function Home() {
-  const initialDuration = 60;
-  const {
-    duration,
-    isPlaying,
-    resetOrRestartToggle,
-    pause,
-    play,
-    reset,
-    restart,
-  } = useTimer(initialDuration);
-
   return (
-    <Timer
-      backgroundColor={pickTimerColor()}
-      duration={duration}
-      initialDuration={initialDuration}
-      isPlaying={isPlaying}
-      resetOrRestartToggle={resetOrRestartToggle}
-      title="Workout"
-      pause={pause}
-      play={play}
-      reset={reset}
-      restart={restart}
+    <Timers
+      numIterations={3}
+      timerConfigs={[
+        { id: randomUUID(), initialDuration: 3, title: "Workout 1" },
+        { id: randomUUID(), initialDuration: 2, title: "Break" },
+      ]}
     />
   );
 }
