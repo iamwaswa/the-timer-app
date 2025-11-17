@@ -3,6 +3,7 @@ import { ThemeProvider } from "@mui/material/styles";
 import { theme } from "@/theme";
 import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
+import { Box, CssBaseline } from "@mui/material";
 
 export const font = Roboto({
   weight: ["300", "400", "500", "700"],
@@ -24,7 +25,19 @@ export default function RootLayout({
     <html lang="en" className={font.variable}>
       <body>
         <AppRouterCacheProvider>
-          <ThemeProvider theme={theme}>{children}</ThemeProvider>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <Box
+              component="main"
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                minHeight: "100dvh",
+              }}
+            >
+              {children}
+            </Box>
+          </ThemeProvider>
         </AppRouterCacheProvider>
       </body>
     </html>
