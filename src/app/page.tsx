@@ -6,8 +6,16 @@ export default function Home() {
     <Timers
       numIterations={3}
       timerConfigs={[
-        { id: randomUUID(), initialDuration: 3, title: "Workout 1" },
-        { id: randomUUID(), initialDuration: 2, title: "Break" },
+        { id: randomUUID(), initialDuration: 45, title: "Modified Burpees" },
+        { id: randomUUID(), initialDuration: 15, title: "Break" },
+        { id: randomUUID(), initialDuration: 45, title: "Chair Dips" },
+        { id: randomUUID(), initialDuration: 15, title: "Break" },
+        { id: randomUUID(), initialDuration: 45, title: "Mountain Climbers" },
+        { id: randomUUID(), initialDuration: 15, title: "Break" },
+        { id: randomUUID(), initialDuration: 45, title: "Superman" },
+        { id: randomUUID(), initialDuration: 15, title: "Break" },
+        { id: randomUUID(), initialDuration: 45, title: "High Knees" },
+        { id: randomUUID(), initialDuration: 15, title: "Break" },
       ]}
     />
   );
