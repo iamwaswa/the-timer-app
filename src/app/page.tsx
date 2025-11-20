@@ -15,7 +15,7 @@ export default function Home() {
         { id: randomUUID(), initialDuration: 45, title: "Superman" },
         { id: randomUUID(), initialDuration: 15, title: "Break" },
         { id: randomUUID(), initialDuration: 45, title: "High Knees" },
-        { id: randomUUID(), initialDuration: 15, title: "Break" },
+        { id: randomUUID(), initialDuration: 60, title: "Long Break" },
       ]}
     />
   );
