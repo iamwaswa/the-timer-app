@@ -8,14 +8,22 @@ type TimersProps = {
 };
 
 export function Timers({ numIterations, timerConfigs }: TimersProps) {
-  const { numIterationsLeft, timerConfigIndex, onTimerFinished } = useTimers(
-    numIterations,
-    timerConfigs
-  );
+  const {
+    nextTimerConfigIndex,
+    numIterationsLeft,
+    timerConfigIndex,
+    onTimerFinished,
+  } = useTimers(numIterations, timerConfigs);
 
   return (
     <Timer
       key={timerConfigs[timerConfigIndex].id}
+      nextTimerConfig={timerConfigs[nextTimerConfigIndex]}
+      shouldShowNextTimer={
+        (numIterationsLeft === 1 &&
+          timerConfigIndex !== timerConfigs.length - 1) ||
+        numIterationsLeft > 1
+      }
       shouldStartPlaying={
         timerConfigIndex > 0 ||
         (timerConfigIndex === 0 &&

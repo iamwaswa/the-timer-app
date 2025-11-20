@@ -20,6 +20,7 @@ export function useTimers(numIterations: number, timerConfigs: TimerConfig[]) {
   }, [numIterationsLeft, timerConfigIndex, timerConfigs]);
 
   return {
+    nextTimerConfigIndex: (timerConfigIndex + 1) % timerConfigs.length,
     numIterationsLeft,
     timerConfigIndex,
     onTimerFinished,
