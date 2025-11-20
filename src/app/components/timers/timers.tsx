@@ -1,7 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
-import { type TimerConfig, Timer } from "@/app/components";
+import { type TimerConfig, Timer, useTimers } from "@/app/components";
 
 type TimersProps = {
   numIterations: number;
@@ -9,20 +8,10 @@ type TimersProps = {
 };
 
 export function Timers({ numIterations, timerConfigs }: TimersProps) {
-  const [numIterationsLeft, setNumIterationsLeft] =
-    useState<number>(numIterations);
-  const [timerConfigIndex, setTimerConfigIndex] = useState<number>(0);
-
-  const onTimerFinished = useCallback(() => {
-    if (numIterationsLeft > 0) {
-      setTimerConfigIndex((index) => (index + 1) % timerConfigs.length);
-      setNumIterationsLeft((iterationsLeft) =>
-        timerConfigIndex === timerConfigs.length - 1
-          ? iterationsLeft - 1
-          : iterationsLeft
-      );
-    }
-  }, [numIterationsLeft, timerConfigIndex, timerConfigs]);
+  const { numIterationsLeft, timerConfigIndex, onTimerFinished } = useTimers(
+    numIterations,
+    timerConfigs
+  );
 
   return (
     <Timer
