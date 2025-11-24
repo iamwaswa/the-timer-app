@@ -1,6 +1,8 @@
 "use client";
 
-import { type TimerConfig, Timer, useTimers } from "@/app/components";
+import type { TimerConfig } from "@/types";
+import { Timer } from "./timer";
+import { useTimers } from "./timers.hook";
 
 type TimersProps = {
   numIterations: number;

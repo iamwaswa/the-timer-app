@@ -1,16 +1,14 @@
 "use client";
 
 import { Alert, Box, Slide, Snackbar, Typography } from "@mui/material";
-import {
-  type TimerConfig,
-  formatDuration,
-  pickTimerColor,
-  TimerActions,
-  TimerDuration,
-  TimerTitle,
-  useTimer,
-} from "@/app/components";
+import type { TimerConfig } from "@/types";
 import { useEffect } from "react";
+import { formatDuration } from "./format-duration.util";
+import { pickTimerColor } from "./pick-timer-color.util";
+import { TimerActions } from "./timer-actions";
+import { TimerDuration } from "./timer-duration";
+import { TimerTitle } from "./timer-title";
+import { useTimer } from "./timer.hook";
 
 type TimerProps = {
   nextTimerConfig: TimerConfig;

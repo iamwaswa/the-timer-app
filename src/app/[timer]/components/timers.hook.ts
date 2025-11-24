@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { type TimerConfig } from "@/app/components";
+import type { TimerConfig } from "@/types";
 
 export function useTimers(numIterations: number, timerConfigs: TimerConfig[]) {
   const [numIterationsLeft, setNumIterationsLeft] =

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import type { TimerConfig } from "@/app/components";
+import type { TimerConfig } from "@/types";
 
 export function useTimer(timerConfig: TimerConfig, shouldStartPlaying = false) {
   const [isFinished, setIsFinished] = useState<boolean>(false);
