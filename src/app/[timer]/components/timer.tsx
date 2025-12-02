@@ -1,6 +1,7 @@
 "use client";
 
 import { Alert, Box, Slide, Snackbar, Typography } from "@mui/material";
+import { usePlayCountdownBeep } from "@/hooks";
 import type { TimerConfig } from "@/types";
 import { useEffect } from "react";
 import { formatDuration } from "./format-duration.util";
@@ -35,6 +36,8 @@ export function Timer({
     reset,
     restart,
   } = useTimer(timerConfig, shouldStartPlaying);
+
+  usePlayCountdownBeep(duration, isPlaying);
 
   useEffect(() => {
     if (isFinished) {
