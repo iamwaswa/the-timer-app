@@ -1,1 +1,1 @@
-export * from "./parse-json.util";
+export * from "./parse-json/parse-json.util";
