@@ -9,22 +9,23 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@mui/material": "7.3.5",
-    "@mui/material-nextjs": "7.3.5",
-    "next": "16.0.3",
-    "react": "19.2.0",
-    "react-dom": "19.2.0"
+    "@mui/material": "7.3.6",
+    "@mui/material-nextjs": "7.3.6",
+    "next": "16.0.7",
+    "react": "19.2.1",
+    "react-dom": "19.2.1"
   },
   "devDependencies": {
     "@emotion/cache": "11.14.0",
     "@emotion/styled": "11.14.1",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
+    "@types/node": "24.10.1",
+    "@types/react": "19.2.7",
+    "@types/react-dom": "19.2.3",
     "babel-plugin-react-compiler": "1.0.0",
-    "baseline-browser-mapping": "2.8.32",
-    "eslint": "^9",
-    "eslint-config-next": "16.0.3",
-    "typescript": "^5"
+    "baseline-browser-mapping": "2.9.4",
+    "eslint": "9.39.1",
+    "eslint-config-next": "16.0.7",
+    "eslint-plugin-import": "2.32.0",
+    "typescript": "5.9.3"
   }
 }
