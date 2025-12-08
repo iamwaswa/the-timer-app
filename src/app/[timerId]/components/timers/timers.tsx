@@ -1,8 +1,8 @@
 "use client";
 
+import { useTimers } from "@/hooks";
 import type { TimerConfig } from "@/types";
-import { Timer } from "./timer";
-import { useTimers } from "./timers.hook";
+import { Timer } from "../timer";
 
 type TimersProps = {
   numIterations: number;

@@ -1,10 +1,18 @@
 "use client";
 
 import { type Breakpoint, Grid } from "@mui/material";
-import { useGetTimers } from "@/hooks";
-import { TimerLink } from "../timer-link";
-import { AddNewTimer } from "../add-new-timer";
+import dynamic from "next/dynamic";
 import { useState } from "react";
+import { useGetTimers } from "@/hooks";
+import { AddNewTimer } from "../add-new-timer";
+import { TimerLink } from "../timer-link";
+
+export const TimersClientOnlyComponent = dynamic(
+  () => Promise.resolve(Timers),
+  {
+    ssr: false,
+  }
+);
 
 type TimersProps = {
   singleColumnBreakpoint: Breakpoint;

@@ -1,7 +1,7 @@
 import { Grid } from "@mui/material";
 import { TimersClientOnlyComponent } from "./components";
 
-export default function Home() {
+export default function HomePage() {
   return (
     <Grid
       alignItems="stretch"
