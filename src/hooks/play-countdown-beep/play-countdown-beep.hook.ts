@@ -1,9 +1,6 @@
 import { useCallback, useEffect, useRef } from "react";
 
-export function usePlayCountdownBeep(
-  currentDuration: number,
-  isPlaying: boolean
-) {
+export function usePlayCountdownBeep(currentDuration: number, isPlaying: boolean) {
   const audioContextRef = useRef<AudioContext | null>(null);
   const oscillatorRef = useRef<OscillatorNode | null>(null);
   const timeout = useRef<NodeJS.Timeout | null>(null);
@@ -27,7 +24,7 @@ export function usePlayCountdownBeep(
 
       timeout.current = setTimeout(stopBeep, length);
     },
-    [stopBeep]
+    [stopBeep],
   );
 
   useEffect(() => {

@@ -1,16 +1,15 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
+
 import type { TimerConfig } from "@/types";
 
 export function useTimer(timerConfig: TimerConfig, shouldStartPlaying = false) {
   const [isFinished, setIsFinished] = useState<boolean>(false);
   const [isPlaying, setIsPlaying] = useState<boolean>(shouldStartPlaying);
   const [duration, setDuration] = useState<number>(timerConfig.initialDuration);
-  const [resetOrRestartToggle, setResetOrRestartToggle] =
-    useState<boolean>(false);
-  const [toggleRestartInterval, setToggleRestartInterval] =
-    useState<boolean>(false);
+  const [resetOrRestartToggle, setResetOrRestartToggle] = useState<boolean>(false);
+  const [toggleRestartInterval, setToggleRestartInterval] = useState<boolean>(false);
 
   useEffect(() => {
     if (!isPlaying) {

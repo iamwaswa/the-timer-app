@@ -19,10 +19,5 @@ export default function TimerPage() {
     return notFound();
   }
 
-  return (
-    <Timers
-      numIterations={timer.numIterations}
-      timerConfigs={timer.timerConfigs}
-    />
-  );
+  return <Timers numIterations={timer.numIterations} timerConfigs={timer.timerConfigs} />;
 }

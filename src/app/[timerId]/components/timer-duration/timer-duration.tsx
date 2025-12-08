@@ -10,10 +10,7 @@ type TimerDurationProps = {
   children: ReactNode;
 };
 
-export function TimerDuration({
-  backgroundColor,
-  children,
-}: TimerDurationProps) {
+export function TimerDuration({ backgroundColor, children }: TimerDurationProps) {
   const theme = useTheme();
   const color = theme.palette.getContrastText(String(backgroundColor));
 

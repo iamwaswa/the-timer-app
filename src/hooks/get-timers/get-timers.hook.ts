@@ -26,26 +26,24 @@ export function useGetTimers() {
             typeof item.numIterations === "number" &&
             "timerConfigs" in item &&
             Array.isArray(item.timerConfigs) &&
-            Array.from(item.timerConfigs).every(
-              (timerConfig): timerConfig is TimerConfig => {
-                return (
-                  typeof timerConfig === "object" &&
-                  timerConfig !== null &&
-                  "id" in timerConfig &&
-                  typeof timerConfig.id === "string" &&
-                  "initialDuration" in timerConfig &&
-                  typeof timerConfig.initialDuration === "number" &&
-                  "title" in timerConfig &&
-                  typeof timerConfig.title === "string"
-                );
-              }
-            ) &&
+            Array.from(item.timerConfigs).every((timerConfig): timerConfig is TimerConfig => {
+              return (
+                typeof timerConfig === "object" &&
+                timerConfig !== null &&
+                "id" in timerConfig &&
+                typeof timerConfig.id === "string" &&
+                "initialDuration" in timerConfig &&
+                typeof timerConfig.initialDuration === "number" &&
+                "title" in timerConfig &&
+                typeof timerConfig.title === "string"
+              );
+            }) &&
             "title" in item &&
             typeof item.title === "string"
           );
         });
       },
-      []
+      [],
     );
   }, []);
 }

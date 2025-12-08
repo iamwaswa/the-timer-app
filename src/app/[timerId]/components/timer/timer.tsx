@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { usePlayCountdownBeep, useTimer } from "@/hooks";
 import type { TimerConfig } from "@/types";
 import { formatDuration, pickTimerColor } from "@/utils";
+
 import { TimerActions } from "../timer-actions";
 import { TimerDuration } from "../timer-duration";
 import { TimerTitle } from "../timer-title";
@@ -25,16 +26,10 @@ export function Timer({
   timerConfig,
   onTimerFinished,
 }: TimerProps) {
-  const {
-    duration,
-    isFinished,
-    isPlaying,
-    resetOrRestartToggle,
-    pause,
-    play,
-    reset,
-    restart,
-  } = useTimer(timerConfig, shouldStartPlaying);
+  const { duration, isFinished, isPlaying, resetOrRestartToggle, pause, play, reset, restart } = useTimer(
+    timerConfig,
+    shouldStartPlaying,
+  );
 
   usePlayCountdownBeep(duration, isPlaying);
 
@@ -97,12 +92,8 @@ export function Timer({
               flexDirection: "column",
             }}
           >
-            <TimerDuration backgroundColor={backgroundColor}>
-              {formatDuration(duration)}
-            </TimerDuration>
-            <TimerTitle backgroundColor={backgroundColor}>
-              {timerConfig.title}
-            </TimerTitle>
+            <TimerDuration backgroundColor={backgroundColor}>{formatDuration(duration)}</TimerDuration>
+            <TimerTitle backgroundColor={backgroundColor}>{timerConfig.title}</TimerTitle>
           </Box>
           <TimerActions
             backgroundColor={backgroundColor}

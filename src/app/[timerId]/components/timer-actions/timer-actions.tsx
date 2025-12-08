@@ -13,38 +13,19 @@ type TimerActionsProps = {
   restart(): void;
 };
 
-export function TimerActions({
-  backgroundColor,
-  isPlaying,
-  pause,
-  play,
-  reset,
-  restart,
-}: TimerActionsProps) {
+export function TimerActions({ backgroundColor, isPlaying, pause, play, reset, restart }: TimerActionsProps) {
   const theme = useTheme();
   const color = theme.palette.getContrastText(String(backgroundColor));
 
   return (
     <Box sx={{ display: "flex", gap: 2 }}>
-      <Button
-        sx={{ borderColor: color, color }}
-        variant="outlined"
-        onClick={reset}
-      >
+      <Button sx={{ borderColor: color, color }} variant="outlined" onClick={reset}>
         Reset
       </Button>
-      <Button
-        sx={{ borderColor: color, color }}
-        variant="outlined"
-        onClick={isPlaying ? pause : play}
-      >
+      <Button sx={{ borderColor: color, color }} variant="outlined" onClick={isPlaying ? pause : play}>
         Play / Pause
       </Button>
-      <Button
-        sx={{ borderColor: color, color }}
-        variant="outlined"
-        onClick={restart}
-      >
+      <Button sx={{ borderColor: color, color }} variant="outlined" onClick={restart}>
         Restart
       </Button>
     </Box>

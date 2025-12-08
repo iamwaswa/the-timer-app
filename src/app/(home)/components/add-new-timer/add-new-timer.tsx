@@ -1,9 +1,4 @@
-import {
-  type Breakpoint,
-  Card,
-  CardActionArea,
-  CardHeader,
-} from "@mui/material";
+import { type Breakpoint, Card, CardActionArea, CardHeader } from "@mui/material";
 import Link from "next/link";
 
 type AddNewTimerProps = {
@@ -11,10 +6,7 @@ type AddNewTimerProps = {
   minHeight: number | null;
 };
 
-export function AddNewTimer({
-  singleColumnBreakpoint,
-  minHeight,
-}: AddNewTimerProps) {
+export function AddNewTimer({ singleColumnBreakpoint, minHeight }: AddNewTimerProps) {
   return (
     <Card
       sx={(theme) => ({
