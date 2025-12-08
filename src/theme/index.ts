@@ -6,7 +6,7 @@ export const theme = createTheme({
   components: {
     MuiButton: {
       styleOverrides: {
-        text: {
+        outlined: {
           textTransform: "none",
         },
       },
