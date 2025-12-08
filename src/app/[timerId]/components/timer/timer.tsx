@@ -6,9 +6,9 @@ import { useEffect } from "react";
 import { usePlayCountdownBeep, useTimer } from "@/hooks";
 import type { TimerConfig } from "@/types";
 import { formatDuration, pickTimerColor } from "@/utils";
-import { TimerActions } from "./timer-actions/timer-actions";
-import { TimerDuration } from "./timer-duration/timer-duration";
-import { TimerTitle } from "./timer-title/timer-title";
+import { TimerActions } from "../timer-actions";
+import { TimerDuration } from "../timer-duration";
+import { TimerTitle } from "../timer-title";
 
 type TimerProps = {
   nextTimerConfig: TimerConfig;
