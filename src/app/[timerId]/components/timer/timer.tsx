@@ -16,6 +16,7 @@ type TimerProps = {
   shouldStartPlaying: boolean;
   shouldShowNextTimer: boolean;
   timerConfig: TimerConfig;
+  onResetAll: (() => void) | undefined;
   onTimerFinished(): void;
 };
 
@@ -24,6 +25,7 @@ export function Timer({
   shouldShowNextTimer,
   shouldStartPlaying,
   timerConfig,
+  onResetAll,
   onTimerFinished,
 }: TimerProps) {
   const { duration, isFinished, isPlaying, resetOrRestartToggle, pause, play, reset, restart } = useTimer(
@@ -101,6 +103,7 @@ export function Timer({
             pause={pause}
             play={play}
             reset={reset}
+            resetAll={onResetAll}
             restart={restart}
           />
         </Box>

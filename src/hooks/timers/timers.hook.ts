@@ -17,10 +17,16 @@ export function useTimers(numIterations: number, timerConfigs: TimerConfig[]) {
     }
   }, [numIterationsLeft, timerConfigIndex, timerConfigs]);
 
+  const onResetAll = useCallback(() => {
+    setNumIterationsLeft(numIterations);
+    setTimerConfigIndex(0);
+  }, [numIterations]);
+
   return {
     nextTimerConfigIndex: (timerConfigIndex + 1) % timerConfigs.length,
     numIterationsLeft,
     timerConfigIndex,
+    onResetAll: timerConfigs.length > 0 ? onResetAll : undefined,
     onTimerFinished,
   };
 }

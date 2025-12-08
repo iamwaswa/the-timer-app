@@ -11,7 +11,7 @@ type TimersProps = {
 };
 
 export function Timers({ numIterations, timerConfigs }: TimersProps) {
-  const { nextTimerConfigIndex, numIterationsLeft, timerConfigIndex, onTimerFinished } = useTimers(
+  const { nextTimerConfigIndex, numIterationsLeft, timerConfigIndex, onResetAll, onTimerFinished } = useTimers(
     numIterations,
     timerConfigs,
   );
@@ -27,6 +27,7 @@ export function Timers({ numIterations, timerConfigs }: TimersProps) {
         timerConfigIndex > 0 || (timerConfigIndex === 0 && numIterationsLeft > 0 && numIterationsLeft !== numIterations)
       }
       timerConfig={timerConfigs[timerConfigIndex]}
+      onResetAll={timerConfigIndex > 0 ? onResetAll : undefined}
       onTimerFinished={onTimerFinished}
     />
   );

@@ -10,24 +10,39 @@ type TimerActionsProps = {
   pause(): void;
   play(): void;
   reset(): void;
+  resetAll: (() => void) | undefined;
   restart(): void;
 };
 
-export function TimerActions({ backgroundColor, isPlaying, pause, play, reset, restart }: TimerActionsProps) {
+export function TimerActions({ backgroundColor, isPlaying, pause, play, reset, resetAll, restart }: TimerActionsProps) {
   const theme = useTheme();
   const color = theme.palette.getContrastText(String(backgroundColor));
 
   return (
-    <Box sx={{ display: "flex", gap: 2 }}>
-      <Button sx={{ borderColor: color, color }} variant="outlined" onClick={reset}>
-        Reset
-      </Button>
-      <Button sx={{ borderColor: color, color }} variant="outlined" onClick={isPlaying ? pause : play}>
-        Play / Pause
-      </Button>
-      <Button sx={{ borderColor: color, color }} variant="outlined" onClick={restart}>
-        Restart
-      </Button>
+    <Box
+      sx={{
+        alignItems: "stretch",
+        display: "flex",
+        flexDirection: "column",
+        gap: 2,
+      }}
+    >
+      <Box sx={{ display: "flex", gap: 2 }}>
+        <Button sx={{ borderColor: color, color }} variant="outlined" onClick={reset}>
+          Reset
+        </Button>
+        <Button sx={{ borderColor: color, color }} variant="outlined" onClick={isPlaying ? pause : play}>
+          Play / Pause
+        </Button>
+        <Button sx={{ borderColor: color, color }} variant="outlined" onClick={restart}>
+          Restart
+        </Button>
+      </Box>
+      {resetAll && (
+        <Button sx={{ borderColor: color, color }} variant="outlined" onClick={resetAll}>
+          Reset All
+        </Button>
+      )}
     </Box>
   );
 }
