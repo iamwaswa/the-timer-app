@@ -6,6 +6,12 @@ export const theme = createTheme({
   components: {
     MuiButton: {
       styleOverrides: {
+        contained: {
+          textTransform: "none",
+        },
+        text: {
+          textTransform: "none",
+        },
         outlined: {
           textTransform: "none",
         },
