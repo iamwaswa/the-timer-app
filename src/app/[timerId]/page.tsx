@@ -11,7 +11,7 @@ type TimerPageParams = {
 };
 
 export default function TimerPage() {
-  const timers = useGetTimers();
+  const [timers] = useGetTimers();
   const { timerId } = useParams<TimerPageParams>();
   const timer = timers.find((t) => t.id === timerId);
 

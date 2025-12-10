@@ -18,7 +18,7 @@ type TimersProps = {
 };
 
 export function Timers({ singleColumnBreakpoint }: TimersProps) {
-  const timers = useGetTimers();
+  const [timers] = useGetTimers();
   const [minItemHeight, setMinItemHeight] = useState<number | null>(null);
 
   return (

@@ -3,7 +3,11 @@ import { useCallback, useState } from "react";
 import type { TimerConfig, TimerType } from "@/types";
 import { generateRandomUUID } from "@/utils";
 
+import { useGetTimers } from "../get-timers";
+
 export function useCreateTimerForm() {
+  const [timers, key] = useGetTimers();
+
   const [formState, setFormState] = useState<TimerType>({
     id: generateRandomUUID(),
     numIterations: 1,
@@ -38,5 +42,9 @@ export function useCreateTimerForm() {
     }));
   }, []);
 
-  return [formState, { updateNumIterations, updateTimerConfigs, updateTitle }] as const;
+  const save = useCallback(() => {
+    localStorage.setItem(key, JSON.stringify([...timers, formState]));
+  }, [key, formState, timers]);
+
+  return [formState, { save, updateNumIterations, updateTimerConfigs, updateTitle }] as const;
 }

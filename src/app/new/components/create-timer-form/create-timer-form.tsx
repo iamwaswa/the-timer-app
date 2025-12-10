@@ -1,6 +1,7 @@
 "use client";
 
 import { Box, Button, TextField } from "@mui/material";
+import { redirect } from "next/navigation";
 
 import { useCreateTimerForm } from "@/hooks";
 
@@ -16,6 +17,11 @@ export function CreateTimerForm() {
         display: "flex",
         flexDirection: "column",
         gap: 2,
+      }}
+      onSubmit={(event) => {
+        event.preventDefault();
+        createTimerFormActions.save();
+        redirect("/");
       }}
     >
       <Box
