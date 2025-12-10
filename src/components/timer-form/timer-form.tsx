@@ -3,12 +3,16 @@
 import { Box, Button, TextField } from "@mui/material";
 import { redirect } from "next/navigation";
 
-import { useCreateTimerForm } from "@/hooks";
+import { TimerConfigFormFields } from "@/components";
+import { useTimerForm } from "@/hooks";
+import { TimerType } from "@/types";
 
-import { Timers } from "../timers";
+type TimerFormProps = {
+  timer?: TimerType;
+};
 
-export function CreateTimerForm() {
-  const [createTimerForm, createTimerFormActions] = useCreateTimerForm();
+export function TimerForm({ timer }: TimerFormProps) {
+  const [timerForm, timerFormActions] = useTimerForm(timer);
 
   return (
     <Box
@@ -20,7 +24,7 @@ export function CreateTimerForm() {
       }}
       onSubmit={(event) => {
         event.preventDefault();
-        createTimerFormActions.save();
+        timerFormActions.save();
         redirect("/");
       }}
     >
@@ -40,8 +44,8 @@ export function CreateTimerForm() {
           required={true}
           sx={{ display: "flex", flexDirection: "column", gap: 2 }}
           type="text"
-          value={createTimerForm.title}
-          onChange={(event) => createTimerFormActions.updateTitle(event.currentTarget.value)}
+          value={timerForm.title}
+          onChange={(event) => timerFormActions.updateTitle(event.currentTarget.value)}
           variant="outlined"
         />
         <TextField
@@ -49,17 +53,17 @@ export function CreateTimerForm() {
           required={true}
           sx={{ display: "flex", flexDirection: "column", gap: 2 }}
           type="number"
-          value={createTimerForm.numIterations}
-          onChange={(event) => createTimerFormActions.updateNumIterations(Number(event.currentTarget.value))}
+          value={timerForm.numIterations}
+          onChange={(event) => timerFormActions.updateNumIterations(Number(event.currentTarget.value))}
           variant="outlined"
         />
-        <Timers
-          timerConfigs={createTimerForm.timerConfigs}
-          updateTimerConfigs={createTimerFormActions.updateTimerConfigs}
+        <TimerConfigFormFields
+          timerConfigs={timerForm.timerConfigs}
+          updateTimerConfigs={timerFormActions.updateTimerConfigs}
         />
       </Box>
       <Button sx={{ alignSelf: "flex-end" }} type="submit" variant="contained" color="primary">
-        Create Timer
+        {timer ? "Update" : "Create"} Timer
       </Button>
     </Box>
   );

@@ -1,6 +1,6 @@
 import { Box, Typography } from "@mui/material";
 
-import { CreateTimerForm } from "./components";
+import { TimerForm } from "@/components";
 
 export default function CreateTimerPage() {
   return (
@@ -8,7 +8,7 @@ export default function CreateTimerPage() {
       <Typography component="h1" typography="h4" sx={{ mb: 2 }}>
         Create New Timer
       </Typography>
-      <CreateTimerForm />
+      <TimerForm />
     </Box>
   );
 }

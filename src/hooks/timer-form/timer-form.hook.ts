@@ -5,14 +5,14 @@ import { generateRandomUUID } from "@/utils";
 
 import { useGetTimers } from "../get-timers";
 
-export function useCreateTimerForm() {
+export function useTimerForm(initialValue?: TimerType) {
   const [timers, key] = useGetTimers();
 
   const [formState, setFormState] = useState<TimerType>({
-    id: generateRandomUUID(),
-    numIterations: 1,
-    title: "New timer",
-    timerConfigs: [
+    id: initialValue?.id ?? generateRandomUUID(),
+    numIterations: initialValue?.numIterations ? Number(initialValue.numIterations) : 1,
+    title: initialValue?.title ?? "New timer",
+    timerConfigs: initialValue?.timerConfigs ?? [
       {
         id: generateRandomUUID(),
         initialDuration: 60,
@@ -43,7 +43,15 @@ export function useCreateTimerForm() {
   }, []);
 
   const save = useCallback(() => {
-    localStorage.setItem(key, JSON.stringify([...timers, formState]));
+    const hasTimer = timers.some((existingTimer) => existingTimer.id === formState.id);
+    localStorage.setItem(
+      key,
+      JSON.stringify(
+        hasTimer
+          ? timers.map((existingTimer) => (existingTimer.id === formState.id ? formState : existingTimer))
+          : [...timers, formState],
+      ),
+    );
   }, [key, formState, timers]);
 
   return [formState, { save, updateNumIterations, updateTimerConfigs, updateTitle }] as const;

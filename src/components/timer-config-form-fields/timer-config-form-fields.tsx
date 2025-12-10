@@ -5,12 +5,12 @@ import { Box, Button, TextField } from "@mui/material";
 import { TimerConfig } from "@/types";
 import { generateRandomUUID } from "@/utils";
 
-type TimersProps = {
+type TimerConfigFormFieldsProps = {
   timerConfigs: TimerConfig[];
   updateTimerConfigs(timerConfigs: TimerConfig[]): void;
 };
 
-export function Timers({ timerConfigs, updateTimerConfigs }: TimersProps) {
+export function TimerConfigFormFields({ timerConfigs, updateTimerConfigs }: TimerConfigFormFieldsProps) {
   const hasSingleTimerConfig = timerConfigs.length === 1;
 
   return (
