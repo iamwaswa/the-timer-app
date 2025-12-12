@@ -2,7 +2,7 @@
 
 import { Box, Button, TextField } from "@mui/material";
 
-import { TimerConfig } from "@/types";
+import type { TimerConfig } from "@/types";
 import { generateRandomUUID } from "@/utils";
 
 type TimerConfigFormFieldsProps = {

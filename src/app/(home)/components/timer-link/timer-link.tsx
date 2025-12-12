@@ -1,7 +1,7 @@
 import { Box, Button, Card, CardActionArea, CardContent, CardHeader, Typography } from "@mui/material";
 import Link from "next/link";
 
-import { TimerType } from "@/types";
+import type { TimerType } from "@/types";
 
 type TimerLinkProps = {
   timer: TimerType;

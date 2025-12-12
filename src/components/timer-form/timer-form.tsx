@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 
 import { TimerConfigFormFields } from "@/components";
 import { useTimerForm } from "@/hooks";
-import { TimerType } from "@/types";
+import type { TimerType } from "@/types";
 
 type TimerFormProps = {
   timer?: TimerType;
