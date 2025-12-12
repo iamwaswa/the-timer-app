@@ -10,7 +10,11 @@
     "lint:fix": "eslint --fix",
     "prettier": "prettier --check .",
     "prettier:fix": "prettier --write .",
-    "prepare": "husky"
+    "prepare": "husky",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:coverage:watch": "vitest run --coverage --watch",
+    "test:watch": "vitest run --watch"
   },
   "dependencies": {
     "@mui/material": "7.3.6",
