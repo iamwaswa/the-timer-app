@@ -5,6 +5,13 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   plugins: [tsconfigPaths(), react()],
   test: {
+    coverage: {
+      exclude: ["index.ts"],
+      include: ["src/**/*.{ts,tsx}"],
+      thresholds: {
+        "100": true,
+      },
+    },
     environment: "jsdom",
     globals: true,
   },
