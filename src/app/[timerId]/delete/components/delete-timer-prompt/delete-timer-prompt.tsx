@@ -2,25 +2,19 @@
 
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
 import Link from "next/link";
-import { redirect, useSearchParams } from "next/navigation";
-import { useMemo } from "react";
+import { redirect } from "next/navigation";
 
-import { useGetTimers } from "@/hooks";
-import { TimerType } from "@/types";
+import type { TimerType } from "@/types";
 
 type DeleteTimerPromptProps = {
+  timersKey: string;
   timer: TimerType;
+  timers: TimerType[];
 };
 
-export function DeleteTimerPrompt({ timer }: DeleteTimerPromptProps) {
-  const [timers, key] = useGetTimers();
-  const searchParams = useSearchParams();
-  const open = useMemo(() => {
-    return searchParams.get("delete") === timer.id;
-  }, [searchParams, timer]);
-
+export function DeleteTimerPrompt({ timer, timers, timersKey }: DeleteTimerPromptProps) {
   return (
-    <Dialog open={open}>
+    <Dialog open={true}>
       <DialogTitle>{timer.title}</DialogTitle>
       <DialogContent>Are you sure you want to delete this timer?</DialogContent>
       <DialogActions>
@@ -30,7 +24,10 @@ export function DeleteTimerPrompt({ timer }: DeleteTimerPromptProps) {
         <Button
           color="error"
           onClick={() => {
-            localStorage.setItem(key, JSON.stringify(timers.filter((existingTimer) => existingTimer.id !== timer.id)));
+            localStorage.setItem(
+              timersKey,
+              JSON.stringify(timers.filter((existingTimer) => existingTimer.id !== timer.id)),
+            );
             redirect("/");
           }}
         >
