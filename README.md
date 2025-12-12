@@ -2,7 +2,9 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-First, run the development server:
+First, create a `.envrc` file at the root of the repo and copy over the contents of the `envrc.example` file. Make sure you have `direnv` installed on your machine and open up a new terminal window and follow the instructions to make sure the correct version of `Node` is selected in order to run the application correctly.
+
+Then, run the development server:
 
 ```bash
 npm run dev
