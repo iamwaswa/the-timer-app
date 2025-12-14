@@ -9,7 +9,7 @@ export function useTimers(numIterations: number, timerConfigs: TimerConfig[]) {
   const [timerConfigIndex, setTimerConfigIndex] = useState<number>(0);
 
   const onTimerFinished = useCallback(() => {
-    if (numIterationsLeft > 0) {
+    if (numIterationsLeft > 0 && timerConfigs.length > 0) {
       setTimerConfigIndex((index) => (index + 1) % timerConfigs.length);
       setNumIterationsLeft((iterationsLeft) =>
         timerConfigIndex === timerConfigs.length - 1 ? iterationsLeft - 1 : iterationsLeft,
@@ -23,7 +23,7 @@ export function useTimers(numIterations: number, timerConfigs: TimerConfig[]) {
   }, [numIterations]);
 
   return {
-    nextTimerConfigIndex: (timerConfigIndex + 1) % timerConfigs.length,
+    nextTimerConfigIndex: timerConfigs.length > 0 ? (timerConfigIndex + 1) % timerConfigs.length : 0,
     numIterationsLeft,
     timerConfigIndex,
     onResetAll: timerConfigs.length > 0 ? onResetAll : undefined,

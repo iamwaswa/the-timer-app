@@ -14,15 +14,15 @@ export function usePlayCountdownBeep(currentDuration: number, isPlaying: boolean
   }, []);
 
   const playBeep = useCallback(
-    (frequency: number, length: number) => {
+    (frequencyInHz: number, durationInMs: number) => {
       audioContextRef.current = new AudioContext();
       oscillatorRef.current = audioContextRef.current.createOscillator();
       oscillatorRef.current.type = "sine";
-      oscillatorRef.current.frequency.value = frequency;
+      oscillatorRef.current.frequency.value = frequencyInHz;
       oscillatorRef.current.connect(audioContextRef.current.destination);
       oscillatorRef.current.start();
 
-      timeout.current = setTimeout(stopBeep, length);
+      timeout.current = setTimeout(stopBeep, durationInMs);
     },
     [stopBeep],
   );
@@ -36,10 +36,12 @@ export function usePlayCountdownBeep(currentDuration: number, isPlaying: boolean
       playBeep(440, 700);
     }
 
-    if (currentDuration <= 1) {
+    if (currentDuration <= 1 && currentDuration > 0) {
       playBeep(880, 1000);
     }
-  }, [currentDuration, isPlaying, playBeep]);
+
+    return stopBeep;
+  }, [currentDuration, isPlaying, playBeep, stopBeep]);
 
   return playBeep;
 }

@@ -1,9 +1,8 @@
 import { useCallback, useState } from "react";
 
+import { useGetTimers } from "@/hooks";
 import type { TimerConfig, TimerType } from "@/types";
 import { generateRandomUUID } from "@/utils";
-
-import { useGetTimers } from "../get-timers";
 
 export function useTimerForm(initialValue?: TimerType) {
   const [timers, key] = useGetTimers();
