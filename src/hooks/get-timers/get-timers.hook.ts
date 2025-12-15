@@ -9,7 +9,7 @@ export function useGetTimers() {
   return useMemo<UseGetTimersReturnType>(() => {
     const key = "timers";
 
-    if (!window?.localStorage) {
+    if (typeof window === "undefined" || !window?.localStorage) {
       return [[], key];
     }
 
