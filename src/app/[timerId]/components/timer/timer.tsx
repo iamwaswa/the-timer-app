@@ -38,6 +38,8 @@ export function Timer({
   useEffect(() => {
     if (isFinished) {
       onTimerFinished();
+    } else {
+      return;
     }
   }, [isFinished, onTimerFinished]);
 

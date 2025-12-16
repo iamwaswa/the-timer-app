@@ -11,46 +11,46 @@ export function useGetTimers() {
 
     if (typeof window === "undefined" || !window?.localStorage) {
       return [[], key];
-    }
-
-    return [
-      parseJson<TimerType[]>(
-        window.localStorage.getItem("timers"),
-        function parseJsonToTimerTypeArray(json) {
-          if (!Array.isArray(json)) {
-            return [];
-          }
-
-          return json.filter((item): item is TimerType => {
-            return (
-              typeof item === "object" &&
-              item !== null &&
-              "id" in item &&
-              typeof item.id === "string" &&
-              "numIterations" in item &&
-              typeof item.numIterations === "number" &&
-              "timerConfigs" in item &&
-              Array.isArray(item.timerConfigs) &&
-              Array.from(item.timerConfigs).every((timerConfig): timerConfig is TimerConfig => {
+    } else {
+      return [
+        parseJson<TimerType[]>(
+          window.localStorage.getItem("timers"),
+          function parseJsonToTimerTypeArray(json) {
+            if (!Array.isArray(json)) {
+              return [];
+            } else {
+              return json.filter((item): item is TimerType => {
                 return (
-                  typeof timerConfig === "object" &&
-                  timerConfig !== null &&
-                  "id" in timerConfig &&
-                  typeof timerConfig.id === "string" &&
-                  "initialDuration" in timerConfig &&
-                  typeof timerConfig.initialDuration === "number" &&
-                  "title" in timerConfig &&
-                  typeof timerConfig.title === "string"
+                  typeof item === "object" &&
+                  item !== null &&
+                  "id" in item &&
+                  typeof item.id === "string" &&
+                  "numIterations" in item &&
+                  typeof item.numIterations === "number" &&
+                  "timerConfigs" in item &&
+                  Array.isArray(item.timerConfigs) &&
+                  Array.from(item.timerConfigs).every((timerConfig): timerConfig is TimerConfig => {
+                    return (
+                      typeof timerConfig === "object" &&
+                      timerConfig !== null &&
+                      "id" in timerConfig &&
+                      typeof timerConfig.id === "string" &&
+                      "initialDuration" in timerConfig &&
+                      typeof timerConfig.initialDuration === "number" &&
+                      "title" in timerConfig &&
+                      typeof timerConfig.title === "string"
+                    );
+                  }) &&
+                  "title" in item &&
+                  typeof item.title === "string"
                 );
-              }) &&
-              "title" in item &&
-              typeof item.title === "string"
-            );
-          });
-        },
-        [],
-      ),
-      key,
-    ];
+              });
+            }
+          },
+          [],
+        ),
+        key,
+      ];
+    }
   }, []);
 }
