@@ -2,19 +2,13 @@ import { renderHook } from "@testing-library/react";
 
 import { useGetTimers } from "./get-timers.hook";
 
-let originalWindow: typeof window;
 let originalWindowLocalStorage: typeof window.localStorage;
 
 beforeEach(() => {
-  originalWindow = window;
   originalWindowLocalStorage = window.localStorage;
 });
 
 afterEach(() => {
-  Object.defineProperty(window, "get", {
-    value: originalWindow,
-    configurable: true,
-  });
   Object.defineProperty(window, "localStorage", {
     value: originalWindowLocalStorage,
     configurable: true,
