@@ -6,7 +6,7 @@ import { Roboto } from "next/font/google";
 
 import { theme } from "@/theme";
 
-export const font = Roboto({
+const font = Roboto({
   weight: ["300", "400", "500", "700"],
   subsets: ["latin"],
   display: "swap",
