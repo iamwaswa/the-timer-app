@@ -6,7 +6,7 @@ import type { Property } from "csstype";
 import type { ReactNode } from "react";
 
 type TimerDurationProps = {
-  backgroundColor?: Property.BackgroundColor;
+  backgroundColor: Property.BackgroundColor;
   children: ReactNode;
 };
 
