@@ -42,6 +42,4 @@ export function usePlayCountdownBeep(currentDuration: number, isPlaying: boolean
 
     return stopBeep;
   }, [currentDuration, isPlaying, playBeep, stopBeep]);
-
-  return playBeep;
 }
