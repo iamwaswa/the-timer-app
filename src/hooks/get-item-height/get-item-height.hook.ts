@@ -5,7 +5,12 @@ export function useGetItemHeight(parentElementId: string) {
 
   useEffect(() => {
     function handleResize() {
-      setItemHeight(getPrecedingElementHeight(parentElementId));
+      setItemHeight(
+        // Gets the second to last item's height (which is the item right before the item we want to calculate the height for)
+        document
+          .querySelector(`.MuiGrid-container#${parentElementId} .MuiGrid-root:nth-last-child(2) > .MuiPaper-root`)
+          ?.getBoundingClientRect().height,
+      );
     }
 
     handleResize();
@@ -18,11 +23,4 @@ export function useGetItemHeight(parentElementId: string) {
   }, [parentElementId]);
 
   return itemHeight;
-}
-
-function getPrecedingElementHeight(parentElementId: string): number | undefined {
-  // Gets the second to last item's height (which is the item right before the item we want to calculate the height for)
-  return document
-    .querySelector(`.MuiGrid-container#${parentElementId} .MuiGrid-root:nth-last-child(2) > .MuiPaper-root`)
-    ?.getBoundingClientRect().height;
 }
