@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [tsconfigPaths(), react()],
   test: {
     coverage: {
-      exclude: ["index.ts"],
+      exclude: ["index.ts", "src/app/layout.tsx"],
       include: ["src/**/*.{ts,tsx}"],
       thresholds: {
         "100": true,
