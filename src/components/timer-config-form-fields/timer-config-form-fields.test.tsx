@@ -1,4 +1,4 @@
-import { act, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 
 import { generateRandomUUID } from "@/utils";
@@ -37,7 +37,7 @@ it("should call updateTimerConfigs when adding a new timer", async () => {
 
   render(<TimerConfigFormFields timerConfigs={timerConfigs} updateTimerConfigs={updateTimerConfigs} />);
 
-  await act(() => event.click(screen.getByRole("button", { name: "Add Timer" })));
+  await event.click(screen.getByRole("button", { name: "Add Timer" }));
 
   expect(updateTimerConfigs).toHaveBeenCalledWith([
     ...timerConfigs,
@@ -60,14 +60,14 @@ it("should call updateTimerConfigs when updating a timer title", async () => {
     <TimerConfigFormFields timerConfigs={timerConfigs} updateTimerConfigs={updateTimerConfigs} />,
   );
 
-  await act(() => event.clear(screen.getAllByRole("textbox", { name: /Title/ })[0]));
+  await event.clear(screen.getAllByRole("textbox", { name: /Title/ })[0]);
 
   expect(updateTimerConfigs).toHaveBeenLastCalledWith([{ ...timerConfigs[0], title: "" }, timerConfigs[1]]);
 
   rerender(<TimerConfigFormFields timerConfigs={timerConfigs} updateTimerConfigs={updateTimerConfigs} />);
 
   const nextCharacter = "s";
-  await act(() => event.type(screen.getAllByRole("textbox", { name: /Title/ })[0], nextCharacter));
+  await event.type(screen.getAllByRole("textbox", { name: /Title/ })[0], nextCharacter);
 
   expect(updateTimerConfigs).toHaveBeenLastCalledWith([{ ...timerConfigs[0], title: nextCharacter }, timerConfigs[1]]);
 });
@@ -86,16 +86,14 @@ it("should call updateTimerConfigs when updating a timer duration", async () => 
     <TimerConfigFormFields timerConfigs={timerConfigs} updateTimerConfigs={updateTimerConfigs} />,
   );
 
-  await act(() => event.clear(screen.getAllByRole("spinbutton", { name: /Initial Duration \(seconds\)/ })[0]));
+  await event.clear(screen.getAllByRole("spinbutton", { name: /Initial Duration \(seconds\)/ })[0]);
 
   expect(updateTimerConfigs).toHaveBeenLastCalledWith([{ ...timerConfigs[0], initialDuration: 0 }, timerConfigs[1]]);
 
   rerender(<TimerConfigFormFields timerConfigs={timerConfigs} updateTimerConfigs={updateTimerConfigs} />);
 
   const nextCharacter = "1";
-  await act(() =>
-    event.type(screen.getAllByRole("spinbutton", { name: /Initial Duration \(seconds\)/ })[0], nextCharacter),
-  );
+  await event.type(screen.getAllByRole("spinbutton", { name: /Initial Duration \(seconds\)/ })[0], nextCharacter);
 
   expect(updateTimerConfigs).toHaveBeenLastCalledWith([
     { ...timerConfigs[0], initialDuration: Number(nextCharacter) },
@@ -113,7 +111,7 @@ it("should call updateTimerConfigs when deleting a timer", async () => {
 
   render(<TimerConfigFormFields timerConfigs={timerConfigs} updateTimerConfigs={updateTimerConfigs} />);
 
-  await act(() => event.click(screen.getAllByRole("button", { name: "Delete timer" })[0]));
+  await event.click(screen.getAllByRole("button", { name: "Delete timer" })[0]);
 
   expect(updateTimerConfigs).toHaveBeenCalledWith([timerConfigs[1]]);
 });

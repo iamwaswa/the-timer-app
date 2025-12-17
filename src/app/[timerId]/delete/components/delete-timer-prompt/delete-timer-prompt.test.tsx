@@ -1,4 +1,4 @@
-import { act, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 import { redirect } from "next/navigation";
 
@@ -98,7 +98,7 @@ it("should remove the timer from localStorage and redirect when delete button is
 
   render(<DeleteTimerPrompt timer={timers[0]} timers={timers} timersKey="timers" />);
 
-  await act(() => event.click(screen.getByRole("button", { name: "Delete" })));
+  await event.click(screen.getByRole("button", { name: "Delete" }));
 
   expect(localStorage.setItem).toHaveBeenCalledTimes(1);
   expect(localStorage.setItem).toHaveBeenCalledWith("timers", JSON.stringify([timers[1]]));

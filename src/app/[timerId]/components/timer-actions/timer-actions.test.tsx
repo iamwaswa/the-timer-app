@@ -1,5 +1,5 @@
 import { ThemeProvider } from "@mui/material";
-import { act, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 
 import { theme } from "@/theme";
@@ -69,25 +69,25 @@ it("should trigger actions as expected", async () => {
 
   expect(reset).not.toHaveBeenCalled();
 
-  await act(() => event.click(screen.getByRole("button", { name: "Reset" })));
+  await event.click(screen.getByRole("button", { name: "Reset" }));
 
   expect(reset).toHaveBeenCalled();
 
   expect(play).not.toHaveBeenCalled();
 
-  await act(() => event.click(screen.getByRole("button", { name: "Play / Pause" })));
+  await event.click(screen.getByRole("button", { name: "Play / Pause" }));
 
   expect(play).toHaveBeenCalled();
 
   expect(restart).not.toHaveBeenCalled();
 
-  await act(() => event.click(screen.getByRole("button", { name: "Restart" })));
+  await event.click(screen.getByRole("button", { name: "Restart" }));
 
   expect(restart).toHaveBeenCalled();
 
   expect(resetAll).not.toHaveBeenCalled();
 
-  await act(() => event.click(screen.getByRole("button", { name: "Reset All" })));
+  await event.click(screen.getByRole("button", { name: "Reset All" }));
 
   expect(resetAll).toHaveBeenCalled();
 });
@@ -110,7 +110,7 @@ it('should pause when isPlaying is true and "Play / Pause" is clicked', async ()
     </ThemeProvider>,
   );
 
-  await act(() => event.click(screen.getByRole("button", { name: "Play / Pause" })));
+  await event.click(screen.getByRole("button", { name: "Play / Pause" }));
 
   expect(pause).toHaveBeenCalled();
 });

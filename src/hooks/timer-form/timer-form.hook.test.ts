@@ -1,4 +1,5 @@
-import { act, renderHook } from "@testing-library/react";
+import { renderHook } from "@testing-library/react";
+import { act } from "react";
 
 import * as useGetTimersHookModule from "@/hooks/get-timers/get-timers.hook";
 import type { TimerConfig, TimerType } from "@/types";

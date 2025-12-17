@@ -1,4 +1,4 @@
-import { act, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 import { redirect } from "next/navigation";
 
@@ -66,14 +66,14 @@ it("should call updateTitle when the title is changed", async () => {
 
   const { rerender } = render(<TimerForm />);
 
-  await act(() => event.clear(screen.getByRole("textbox", { name: /Title/ })));
+  await event.clear(screen.getByRole("textbox", { name: /Title/ }));
 
   expect(timerFormActions.updateTitle).toHaveBeenLastCalledWith("");
 
   rerender(<TimerForm />);
 
   const nextCharacter = "s";
-  await act(() => event.type(screen.getByRole("textbox", { name: /Title/ }), nextCharacter));
+  await event.type(screen.getByRole("textbox", { name: /Title/ }), nextCharacter);
 
   expect(timerFormActions.updateTitle).toHaveBeenLastCalledWith(nextCharacter);
 });
@@ -98,14 +98,14 @@ it("should call updateNumIterations when the number of iterations is changed", a
 
   const { rerender } = render(<TimerForm />);
 
-  await act(() => event.clear(screen.getByRole("spinbutton", { name: /Number of iterations/ })));
+  await event.clear(screen.getByRole("spinbutton", { name: /Number of iterations/ }));
 
   expect(timerFormActions.updateNumIterations).toHaveBeenLastCalledWith(0);
 
   rerender(<TimerForm />);
 
   const nextCharacter = "1";
-  await act(() => event.type(screen.getByRole("spinbutton", { name: /Number of iterations/ }), nextCharacter));
+  await event.type(screen.getByRole("spinbutton", { name: /Number of iterations/ }), nextCharacter);
 
   expect(timerFormActions.updateNumIterations).toHaveBeenLastCalledWith(Number(nextCharacter));
 });
@@ -128,7 +128,7 @@ it("should call save and redirect on form submission", async () => {
 
   render(<TimerForm />);
 
-  await act(() => event.click(screen.getByRole("button", { name: "Create Timer" })));
+  await event.click(screen.getByRole("button", { name: "Create Timer" }));
 
   expect(timerFormActions.save).toHaveBeenCalled();
   expect(redirectMock).toHaveBeenCalledWith("/");

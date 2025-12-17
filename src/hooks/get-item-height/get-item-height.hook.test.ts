@@ -1,4 +1,5 @@
-import { act, renderHook } from "@testing-library/react";
+import { renderHook } from "@testing-library/react";
+import { act } from "react";
 
 import { useGetItemHeight } from "./get-item-height.hook";
 
