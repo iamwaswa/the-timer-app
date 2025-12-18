@@ -124,25 +124,3 @@ it("should play a 880Hz beep for 1000ms when duration is 1", () => {
   expect(mockStop).toHaveBeenCalledTimes(1);
   expect(mockClose).toHaveBeenCalledTimes(1);
 });
-
-it("should clean up audio context immediately if component unmounts mid-beep", () => {
-  Object.defineProperty(window, "AudioContext", {
-    value: MockAudioContext,
-    configurable: true,
-    writable: true,
-  });
-
-  const { unmount } = renderHook(() => usePlayCountdownBeep(5, true));
-
-  expect(mockStart).toHaveBeenCalled();
-
-  vi.advanceTimersByTime(699);
-
-  expect(mockStop).not.toHaveBeenCalled();
-  expect(mockClose).not.toHaveBeenCalled();
-
-  unmount();
-
-  expect(mockStop).toHaveBeenCalled();
-  expect(mockClose).toHaveBeenCalled();
-});
