@@ -2,12 +2,12 @@
 
 import { Box, Button, TextField } from "@mui/material";
 
-import type { TimerConfig } from "@/types";
+import type { TimerInterval } from "@/types";
 import { generateRandomUUID } from "@/utils";
 
 type TimerConfigFormFieldsProps = {
-  timerConfigs: TimerConfig[];
-  updateTimerConfigs(timerConfigs: TimerConfig[]): void;
+  timerConfigs: TimerInterval[];
+  updateTimerConfigs(timerConfigs: TimerInterval[]): void;
 };
 
 export function TimerConfigFormFields({ timerConfigs, updateTimerConfigs }: TimerConfigFormFieldsProps) {
@@ -39,14 +39,14 @@ export function TimerConfigFormFields({ timerConfigs, updateTimerConfigs }: Time
               sx={{ flexGrow: 1 }}
               type="number"
               variant="outlined"
-              value={timerConfig.initialDuration}
+              value={timerConfig.duration}
               onChange={(event) =>
                 updateTimerConfigs(
                   timerConfigs.map((config) =>
                     config.id === timerConfig.id
                       ? {
                           ...config,
-                          initialDuration: Number(event.currentTarget.value),
+                          duration: Number(event.currentTarget.value),
                         }
                       : config,
                   ),
@@ -73,7 +73,7 @@ export function TimerConfigFormFields({ timerConfigs, updateTimerConfigs }: Time
             {
               id: generateRandomUUID(),
               title: "New interval",
-              initialDuration: 60,
+              duration: 60,
             },
           ])
         }

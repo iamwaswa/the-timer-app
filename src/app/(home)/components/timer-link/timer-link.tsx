@@ -27,10 +27,10 @@ export function TimerLink({ timer }: TimerLinkProps) {
         <CardContent>
           <Typography variant="body2">Number of iterations: {timer.numIterations}</Typography>
           <Box component="ol">
-            {timer.timerConfigs.map((timerConfig) => (
+            {timer.timerIntervals.map((timerConfig) => (
               <Box key={timerConfig.id} component="li">
                 <Typography variant="body2">
-                  {timerConfig.title} - {timerConfig.initialDuration} seconds
+                  {timerConfig.title} - {timerConfig.duration} seconds
                 </Typography>
               </Box>
             ))}

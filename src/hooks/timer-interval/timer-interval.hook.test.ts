@@ -1,7 +1,7 @@
 import { renderHook } from "@testing-library/react";
 import { act } from "react";
 
-import { useTimer } from "./timer.hook";
+import { useTimerInterval } from "./timer-interval.hook";
 
 beforeEach(() => {
   vi.useFakeTimers();
@@ -13,24 +13,24 @@ afterEach(() => {
 });
 
 it("should initialize with the correct default state", () => {
-  const timerConfig = {
+  const timerInterval = {
     id: "1",
-    initialDuration: 10,
+    duration: 10,
     title: "Test interval",
   };
-  const { result } = renderHook(() => useTimer(timerConfig));
+  const { result } = renderHook(() => useTimerInterval(timerInterval));
 
-  expect(result.current.duration).toBe(timerConfig.initialDuration);
+  expect(result.current.duration).toBe(timerInterval.duration);
   expect(result.current.isPlaying).toBe(false);
   expect(result.current.isFinished).toBe(false);
 });
 
 it("should initialize with isPlaying as true if shouldStartPlaying is true", () => {
   const { result } = renderHook(() =>
-    useTimer(
+    useTimerInterval(
       {
         id: "1",
-        initialDuration: 10,
+        duration: 10,
         title: "Test interval",
       },
       true,
@@ -41,9 +41,9 @@ it("should initialize with isPlaying as true if shouldStartPlaying is true", () 
 
 it("should start playing when play is called", () => {
   const { result } = renderHook(() =>
-    useTimer({
+    useTimerInterval({
       id: "1",
-      initialDuration: 10,
+      duration: 10,
       title: "Test interval",
     }),
   );
@@ -59,10 +59,10 @@ it("should start playing when play is called", () => {
 
 it("should pause playing when pause is called", () => {
   const { result } = renderHook(() =>
-    useTimer(
+    useTimerInterval(
       {
         id: "1",
-        initialDuration: 10,
+        duration: 10,
         title: "Test interval",
       },
       true,
@@ -79,35 +79,35 @@ it("should pause playing when pause is called", () => {
 });
 
 it("should decrease duration when playing", () => {
-  const timerConfig = {
+  const timerInterval = {
     id: "1",
-    initialDuration: 10,
+    duration: 10,
     title: "Test interval",
   };
-  const { result } = renderHook(() => useTimer(timerConfig, true));
+  const { result } = renderHook(() => useTimerInterval(timerInterval, true));
 
   const durationDecreaseInMs = 3000;
   act(() => {
     vi.advanceTimersByTime(durationDecreaseInMs);
   });
 
-  expect(result.current.duration).toBe((timerConfig.initialDuration * 1000 - durationDecreaseInMs) / 1000);
+  expect(result.current.duration).toBe((timerInterval.duration * 1000 - durationDecreaseInMs) / 1000);
 });
 
 it("should stop playing and set isFinished to true when timer ends", () => {
-  const timerConfig = {
+  const timerInterval = {
     id: "1",
-    initialDuration: 10,
+    duration: 10,
     title: "Test interval",
   };
-  const { result } = renderHook(() => useTimer(timerConfig, true));
+  const { result } = renderHook(() => useTimerInterval(timerInterval, true));
 
-  expect(result.current.duration).toBe(timerConfig.initialDuration);
+  expect(result.current.duration).toBe(timerInterval.duration);
   expect(result.current.isPlaying).toBe(true);
   expect(result.current.isFinished).toBe(false);
 
   act(() => {
-    vi.advanceTimersByTime(timerConfig.initialDuration * 1000);
+    vi.advanceTimersByTime(timerInterval.duration * 1000);
   });
 
   expect(result.current.duration).toBe(0);
@@ -115,15 +115,15 @@ it("should stop playing and set isFinished to true when timer ends", () => {
   expect(result.current.isFinished).toBe(true);
 });
 
-it("should reset the timer", () => {
-  const timerConfig = {
+it("should reset the timer interval when reset is called", () => {
+  const timerInterval = {
     id: "1",
-    initialDuration: 10,
+    duration: 10,
     title: "Test interval",
   };
-  const { result } = renderHook(() => useTimer(timerConfig, true));
+  const { result } = renderHook(() => useTimerInterval(timerInterval, true));
 
-  expect(result.current.duration).toBe(timerConfig.initialDuration);
+  expect(result.current.duration).toBe(timerInterval.duration);
   expect(result.current.isPlaying).toBe(true);
   expect(result.current.isFinished).toBe(false);
 
@@ -132,7 +132,7 @@ it("should reset the timer", () => {
     vi.advanceTimersByTime(durationDecreaseInMs);
   });
 
-  expect(result.current.duration).toBe((timerConfig.initialDuration * 1000 - durationDecreaseInMs) / 1000);
+  expect(result.current.duration).toBe((timerInterval.duration * 1000 - durationDecreaseInMs) / 1000);
   expect(result.current.isPlaying).toBe(true);
   expect(result.current.isFinished).toBe(false);
 
@@ -140,20 +140,20 @@ it("should reset the timer", () => {
     result.current.reset();
   });
 
-  expect(result.current.duration).toBe(timerConfig.initialDuration);
+  expect(result.current.duration).toBe(timerInterval.duration);
   expect(result.current.isPlaying).toBe(false);
   expect(result.current.isFinished).toBe(false);
 });
 
-it("should restart the timer", () => {
-  const timerConfig = {
+it("should restart the timer interval when restart is called", () => {
+  const timerInterval = {
     id: "1",
-    initialDuration: 10,
+    duration: 10,
     title: "Test interval",
   };
-  const { result } = renderHook(() => useTimer(timerConfig, true));
+  const { result } = renderHook(() => useTimerInterval(timerInterval, true));
 
-  expect(result.current.duration).toBe(timerConfig.initialDuration);
+  expect(result.current.duration).toBe(timerInterval.duration);
   expect(result.current.isPlaying).toBe(true);
   expect(result.current.isFinished).toBe(false);
 
@@ -162,7 +162,7 @@ it("should restart the timer", () => {
     vi.advanceTimersByTime(firstDurationDecreaseInMs);
   });
 
-  expect(result.current.duration).toBe((timerConfig.initialDuration * 1000 - firstDurationDecreaseInMs) / 1000);
+  expect(result.current.duration).toBe((timerInterval.duration * 1000 - firstDurationDecreaseInMs) / 1000);
   expect(result.current.isPlaying).toBe(true);
   expect(result.current.isFinished).toBe(false);
 
@@ -170,7 +170,7 @@ it("should restart the timer", () => {
     result.current.restart();
   });
 
-  expect(result.current.duration).toBe(timerConfig.initialDuration);
+  expect(result.current.duration).toBe(timerInterval.duration);
   expect(result.current.isPlaying).toBe(true);
   expect(result.current.isFinished).toBe(false);
 
@@ -179,7 +179,7 @@ it("should restart the timer", () => {
     vi.advanceTimersByTime(secondDurationDecreaseInMs);
   });
 
-  expect(result.current.duration).toBe((timerConfig.initialDuration * 1000 - secondDurationDecreaseInMs) / 1000);
+  expect(result.current.duration).toBe((timerInterval.duration * 1000 - secondDurationDecreaseInMs) / 1000);
   expect(result.current.isPlaying).toBe(true);
   expect(result.current.isFinished).toBe(false);
 });

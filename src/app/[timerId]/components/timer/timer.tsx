@@ -3,8 +3,8 @@
 import { Alert, Box, Slide, Snackbar, Typography } from "@mui/material";
 import { useEffect } from "react";
 
-import { usePlayCountdownBeep, useTimer } from "@/hooks";
-import type { TimerConfig } from "@/types";
+import { usePlayCountdownBeep, useTimerInterval } from "@/hooks";
+import type { TimerInterval } from "@/types";
 import { formatDuration, pickTimerColor } from "@/utils";
 
 import { TimerActions } from "../timer-actions";
@@ -12,10 +12,10 @@ import { TimerDuration } from "../timer-duration";
 import { TimerTitle } from "../timer-title";
 
 type TimerProps = {
-  nextTimerConfig: TimerConfig;
+  nextTimerConfig: TimerInterval;
   shouldStartPlaying: boolean;
   shouldShowNextTimer: boolean;
-  timerConfig: TimerConfig;
+  timerConfig: TimerInterval;
   onResetAll: (() => void) | undefined;
   onTimerFinished(): void;
 };
@@ -28,7 +28,7 @@ export function Timer({
   onResetAll,
   onTimerFinished,
 }: TimerProps) {
-  const { duration, isFinished, isPlaying, resetOrRestartToggle, pause, play, reset, restart } = useTimer(
+  const { duration, isFinished, isPlaying, resetOrRestartToggle, pause, play, reset, restart } = useTimerInterval(
     timerConfig,
     shouldStartPlaying,
   );
@@ -67,7 +67,7 @@ export function Timer({
               "0%": { transform: "translateX(-100%)" },
               "100%": { transform: "translateX(0%)" },
             },
-            animation: `timer-move ${timerConfig.initialDuration}s linear forwards`,
+            animation: `timer-move ${timerConfig.duration}s linear forwards`,
             animationPlayState: isPlaying ? "running" : "paused",
             backgroundColor,
             height: "100%",

@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import { type PropsWithChildren, useState } from "react";
 
-import type { TimerConfig, TimerType } from "@/types";
+import type { TimerInterval, TimerType } from "@/types";
 import { parseJson } from "@/utils";
 
 import { TimersContext, type TimersContextType } from "./timers.context";
@@ -53,7 +53,7 @@ function getTimersFromLocalStorage() {
             typeof item.numIterations === "number" &&
             "timerConfigs" in item &&
             Array.isArray(item.timerConfigs) &&
-            Array.from(item.timerConfigs).every((timerConfig): timerConfig is TimerConfig => {
+            Array.from(item.timerConfigs).every((timerConfig): timerConfig is TimerInterval => {
               return (
                 typeof timerConfig === "object" &&
                 timerConfig !== null &&

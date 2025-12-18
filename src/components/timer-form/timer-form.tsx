@@ -58,7 +58,7 @@ export function TimerForm({ timer }: TimerFormProps) {
           variant="outlined"
         />
         <TimerConfigFormFields
-          timerConfigs={timerForm.timerConfigs}
+          timerConfigs={timerForm.timerIntervals}
           updateTimerConfigs={timerFormActions.updateTimerConfigs}
         />
       </Box>

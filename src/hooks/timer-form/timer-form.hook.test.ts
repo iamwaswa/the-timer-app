@@ -2,7 +2,7 @@ import { renderHook } from "@testing-library/react";
 import { act } from "react";
 
 import * as TimersContextHookModule from "@/context/timers/timers.context.hook";
-import type { TimerConfig, TimerType } from "@/types";
+import type { TimerInterval, TimerType } from "@/types";
 import * as generateRandomUUIDUtilModule from "@/utils/generate-random-uuid/generate-random-uuid.util";
 
 import { useTimerForm } from "./timer-form.hook";
@@ -25,10 +25,10 @@ it("should initialize with a default state when no initial value is provided", (
     id: id,
     numIterations: 1,
     title: "New timer",
-    timerConfigs: [
+    timerIntervals: [
       {
         id: id,
-        initialDuration: 60,
+        duration: 60,
         title: "New interval",
       },
     ],
@@ -44,10 +44,10 @@ it("should initialize with the initialValue when one is provided", () => {
     id,
     numIterations: 2,
     title: "Existing Timer",
-    timerConfigs: [
+    timerIntervals: [
       {
         id: "existing-config-id",
-        initialDuration: 120,
+        duration: 120,
         title: "Existing Interval",
       },
     ],
@@ -81,7 +81,7 @@ it("should update the timer configs", () => {
   useTimersContextSpy.mockImplementation(() => [[], setTimers]);
 
   const { result } = renderHook(() => useTimerForm());
-  const newTimerConfigs: TimerConfig[] = [{ id: "new-config", initialDuration: 30, title: "New Config" }];
+  const newTimerConfigs: TimerInterval[] = [{ id: "new-config", duration: 30, title: "New Config" }];
 
   expect(setTimers).not.toHaveBeenCalled();
 
@@ -89,7 +89,7 @@ it("should update the timer configs", () => {
     result.current[1].updateTimerConfigs(newTimerConfigs);
   });
 
-  expect(result.current[0].timerConfigs).toEqual(newTimerConfigs);
+  expect(result.current[0].timerIntervals).toEqual(newTimerConfigs);
   expect(setTimers).not.toHaveBeenCalled();
 });
 
@@ -130,10 +130,10 @@ it("should save a new timer to localStorage if it's a new timer", () => {
     id: id1,
     numIterations: 1,
     title: "New timer",
-    timerConfigs: [
+    timerIntervals: [
       {
         id: id2,
-        initialDuration: 60,
+        duration: 60,
         title: "New interval",
       },
     ],
@@ -150,13 +150,13 @@ it("should update an existing timer in localStorage if the timer already exists"
       id,
       numIterations: 1,
       title: "Existing Timer",
-      timerConfigs: [{ id: "config-1", initialDuration: 60, title: "Interval" }],
+      timerIntervals: [{ id: "config-1", duration: 60, title: "Interval" }],
     },
     {
       id: `${id}-2}`,
       numIterations: 1,
       title: "Existing Timer 2",
-      timerConfigs: [{ id: "config-2", initialDuration: 60, title: "Interval" }],
+      timerIntervals: [{ id: "config-2", duration: 60, title: "Interval" }],
     },
   ];
   generateRandomUUIDSpy.mockImplementation(() => id);

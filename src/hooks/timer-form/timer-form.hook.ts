@@ -1,54 +1,85 @@
-import { useCallback, useState } from "react";
+import { useReducer } from "react";
 
 import { useTimersContext } from "@/context";
-import type { TimerConfig, TimerType } from "@/types";
+import type { TimerInterval, TimerType } from "@/types";
 import { generateRandomUUID } from "@/utils";
 
 export function useTimerForm(initialValue?: TimerType) {
   const [timers, setTimers] = useTimersContext();
 
-  const [formState, setFormState] = useState<TimerType>({
+  const [state, dispatch] = useReducer(timerFormReducer, {
     id: initialValue?.id ?? generateRandomUUID(),
     numIterations: initialValue?.numIterations !== undefined ? Number(initialValue.numIterations) : 1,
     title: initialValue?.title ?? "New timer",
-    timerConfigs: initialValue?.timerConfigs ?? [
+    timerIntervals: initialValue?.timerIntervals ?? [
       {
         id: generateRandomUUID(),
-        initialDuration: 60,
+        duration: 60,
         title: "New interval",
       },
     ],
   });
 
-  const updateNumIterations = useCallback((updatedNumIterations: number) => {
-    setFormState((currentFormState) => ({
-      ...currentFormState,
-      numIterations: updatedNumIterations,
-    }));
-  }, []);
+  return [
+    state,
+    {
+      save() {
+        const hasTimer = timers.some((existingTimer) => existingTimer.id === state.id);
+        setTimers(
+          hasTimer
+            ? timers.map((existingTimer) => (existingTimer.id === state.id ? state : existingTimer))
+            : [...timers, state],
+        );
+      },
+      updateNumIterations(updatedNumIterations: number) {
+        dispatch({ payload: { updatedNumIterations }, type: "update-num-iterations" });
+      },
+      updateTimerConfigs(updatedTimerIntervals: TimerInterval[]) {
+        dispatch({ payload: { updatedTimerIntervals }, type: "update-timer-intervals" });
+      },
+      updateTitle(updatedTitle: string) {
+        dispatch({ payload: { updatedTitle }, type: "update-title" });
+      },
+    },
+  ] as const;
+}
 
-  const updateTimerConfigs = useCallback((updatedTimerConfigs: TimerConfig[]) => {
-    setFormState((currentFormState) => ({
-      ...currentFormState,
-      timerConfigs: updatedTimerConfigs,
-    }));
-  }, []);
+type TimerFormReducerAction =
+  | {
+      payload: {
+        updatedNumIterations: number;
+      };
+      type: "update-num-iterations";
+    }
+  | {
+      payload: {
+        updatedTimerIntervals: TimerInterval[];
+      };
+      type: "update-timer-intervals";
+    }
+  | {
+      payload: {
+        updatedTitle: string;
+      };
+      type: "update-title";
+    };
 
-  const updateTitle = useCallback((updatedTitle: string) => {
-    setFormState((currentFormState) => ({
-      ...currentFormState,
-      title: updatedTitle,
-    }));
-  }, []);
-
-  const save = useCallback(() => {
-    const hasTimer = timers.some((existingTimer) => existingTimer.id === formState.id);
-    setTimers(
-      hasTimer
-        ? timers.map((existingTimer) => (existingTimer.id === formState.id ? formState : existingTimer))
-        : [...timers, formState],
-    );
-  }, [formState, timers, setTimers]);
-
-  return [formState, { save, updateNumIterations, updateTimerConfigs, updateTitle }] as const;
+function timerFormReducer(state: TimerType, action: TimerFormReducerAction) {
+  switch (action.type) {
+    case "update-num-iterations":
+      return {
+        ...state,
+        numIterations: action.payload.updatedNumIterations,
+      };
+    case "update-timer-intervals":
+      return {
+        ...state,
+        timerIntervals: action.payload.updatedTimerIntervals,
+      };
+    case "update-title":
+      return {
+        ...state,
+        title: action.payload.updatedTitle,
+      };
+  }
 }

@@ -1,20 +1,23 @@
 "use client";
 
-import { useTimers } from "@/hooks";
-import type { TimerConfig } from "@/types";
+import { useSequentialTimerIntervals } from "@/hooks";
+import type { TimerInterval } from "@/types";
 
 import { Timer } from "../timer";
 
 type TimersProps = {
   numIterations: number;
-  timerConfigs: TimerConfig[];
+  timerConfigs: TimerInterval[];
 };
 
 export function Timers({ numIterations, timerConfigs }: TimersProps) {
-  const { nextTimerConfigIndex, numIterationsLeft, timerConfigIndex, onResetAll, onTimerFinished } = useTimers(
-    numIterations,
-    timerConfigs,
-  );
+  const {
+    nextTimerIntervalIndex: nextTimerConfigIndex,
+    numIterationsLeft,
+    currentTimerIntervalIndex: timerConfigIndex,
+    onResetAll,
+    onTimerFinished,
+  } = useSequentialTimerIntervals(numIterations, timerConfigs);
 
   return (
     <Timer

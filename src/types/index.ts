@@ -1,12 +1,12 @@
-export type TimerConfig = {
+export type TimerInterval = {
   id: string;
-  initialDuration: number;
+  duration: number;
   title: string;
 };
 
 export type TimerType = {
   id: string;
   numIterations: number;
-  timerConfigs: TimerConfig[];
+  timerIntervals: TimerInterval[];
   title: string;
 };

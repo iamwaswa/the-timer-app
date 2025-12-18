@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 
-import { useTimer } from "@/hooks";
+import { useTimerInterval } from "@/hooks";
 import { formatDuration, pickTimerColor } from "@/utils";
 
 import { TimerActions } from "../timer-actions";
@@ -10,11 +10,11 @@ import { Timer } from "./timer";
 
 vi.mock("@/hooks", () => ({
   ...vi.importActual("@/hooks"),
-  useTimer: vi.fn(),
+  useTimerInterval: vi.fn(),
   usePlayCountdownBeep: vi.fn(),
 }));
 
-const useTimerMock = vi.mocked(useTimer);
+const useTimerIntervalMock = vi.mocked(useTimerInterval);
 
 vi.mock("@/utils", () => ({
   ...vi.importActual("@/utils"),
@@ -68,7 +68,7 @@ it.each([true, false])(
       reset: vi.fn(),
       restart: vi.fn(),
     };
-    useTimerMock.mockReturnValue(useTimerMockResult);
+    useTimerIntervalMock.mockReturnValue(useTimerMockResult);
     formatDurationMock.mockReturnValue("00:10");
     const backgroundColor = "red";
     pickTimerColorMock.mockReturnValue(backgroundColor);
@@ -123,7 +123,7 @@ it("should call onTimerFinished when the timer is finished", () => {
     reset: vi.fn(),
     restart: vi.fn(),
   };
-  useTimerMock.mockReturnValue(useTimerMockResult);
+  useTimerIntervalMock.mockReturnValue(useTimerMockResult);
   formatDurationMock.mockReturnValue("00:10");
   pickTimerColorMock.mockReturnValue("red");
 
@@ -164,7 +164,7 @@ it("should show the next timer snackbar when shouldShowNextTimer is true", () =>
     reset: vi.fn(),
     restart: vi.fn(),
   };
-  useTimerMock.mockReturnValue(useTimerMockResult);
+  useTimerIntervalMock.mockReturnValue(useTimerMockResult);
   formatDurationMock.mockReturnValue("00:10");
   pickTimerColorMock.mockReturnValue("red");
 
@@ -207,7 +207,7 @@ it("should not show the next timer snackbar when shouldShowNextTimer is false", 
     reset: vi.fn(),
     restart: vi.fn(),
   };
-  useTimerMock.mockReturnValue(useTimerMockResult);
+  useTimerIntervalMock.mockReturnValue(useTimerMockResult);
   formatDurationMock.mockReturnValue("00:10");
   pickTimerColorMock.mockReturnValue("red");
 
@@ -248,7 +248,7 @@ it("should pass the correct props to TimerActions", () => {
     reset: vi.fn(),
     restart: vi.fn(),
   };
-  useTimerMock.mockReturnValue(useTimerMockResult);
+  useTimerIntervalMock.mockReturnValue(useTimerMockResult);
   formatDurationMock.mockReturnValue("00:10");
   const backgroundColor = "red";
   pickTimerColorMock.mockReturnValue(backgroundColor);

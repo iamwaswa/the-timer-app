@@ -7,9 +7,9 @@ it("should render the timer link with all the correct information and links", ()
     id: "123",
     title: "My Test Timer",
     numIterations: 3,
-    timerConfigs: [
-      { id: "a", title: "Work", initialDuration: 25 },
-      { id: "b", title: "Break", initialDuration: 5 },
+    timerIntervals: [
+      { id: "a", duration: 25, title: "Work" },
+      { id: "b", duration: 5, title: "Break" },
     ],
   };
 
@@ -21,7 +21,7 @@ it("should render the timer link with all the correct information and links", ()
   expect(screen.getByRole("link", { name: "Delete" })).toHaveAttribute("href", `/${mockTimer.id}/delete`);
   expect(
     screen.getByRole("link", {
-      name: `Number of iterations: ${mockTimer.numIterations} ${mockTimer.timerConfigs.map((config) => `${config.title} - ${config.initialDuration} seconds`).join(" ")}`,
+      name: `Number of iterations: ${mockTimer.numIterations} ${mockTimer.timerIntervals.map((timerInterval) => `${timerInterval.title} - ${timerInterval.duration} seconds`).join(" ")}`,
     }),
   ).toHaveAttribute("href", `/${mockTimer.id}`);
 });

@@ -28,7 +28,7 @@ it("should render the form with initial values", () => {
   const timerForm = {
     id: "1",
     numIterations: 3,
-    timerConfigs: [],
+    timerIntervals: [],
     title: "Test Timer",
   };
   const timerFormActions = {
@@ -51,7 +51,7 @@ it("should call updateTitle when the title is changed", async () => {
   const timerForm = {
     id: "1",
     numIterations: 3,
-    timerConfigs: [],
+    timerIntervals: [],
     title: "Test Timer",
   };
   const timerFormActions = {
@@ -83,7 +83,7 @@ it("should call updateNumIterations when the number of iterations is changed", a
   const timerForm = {
     id: "1",
     numIterations: 3,
-    timerConfigs: [],
+    timerIntervals: [],
     title: "Test Timer",
   };
   const timerFormActions = {
@@ -115,7 +115,7 @@ it("should call save and redirect on form submission", async () => {
   const timerForm = {
     id: "1",
     numIterations: 3,
-    timerConfigs: [],
+    timerIntervals: [],
     title: "Test Timer",
   };
   const timerFormActions = {
@@ -138,7 +138,7 @@ it('should display "Update Timer" when a timer prop is provided', () => {
   const timerForm = {
     id: "1",
     numIterations: 2,
-    timerConfigs: [],
+    timerIntervals: [],
     title: "Existing Timer",
   };
   const timerFormActions = {

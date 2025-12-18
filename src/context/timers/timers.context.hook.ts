@@ -7,9 +7,9 @@ export function useGetTimersContext() {
 
   if (timersContext === undefined || timersContext.timers === undefined) {
     throw new Error("useGetTimersContext must be used within a TimersContextProvider");
+  } else {
+    return timersContext.timers;
   }
-
-  return timersContext.timers;
 }
 
 export function useSetTimersContext() {
@@ -17,9 +17,9 @@ export function useSetTimersContext() {
 
   if (timersContext === undefined || timersContext.updateTimers === undefined) {
     throw new Error("useSetTimersContext must be used within a TimersContextProvider");
+  } else {
+    return timersContext.updateTimers;
   }
-
-  return timersContext.updateTimers;
 }
 
 export function useTimersContext() {
@@ -27,7 +27,7 @@ export function useTimersContext() {
 
   if (timersContext === undefined || timersContext.timers === undefined || timersContext.updateTimers === undefined) {
     throw new Error("useTimersContext must be used within a TimersContextProvider");
+  } else {
+    return [timersContext.timers, timersContext.updateTimers] as const;
   }
-
-  return [timersContext.timers, timersContext.updateTimers] as const;
 }

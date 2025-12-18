@@ -1,42 +1,42 @@
 import { renderHook } from "@testing-library/react";
 import { act } from "react";
 
-import { useTimers } from "./timers.hook";
+import { useSequentialTimerIntervals } from "./sequential-timer-intervals.hook";
 
 it("should initialize with the correct values", () => {
   const numIterations = 3;
   const { result } = renderHook(() =>
-    useTimers(numIterations, [
+    useSequentialTimerIntervals(numIterations, [
       {
         id: "1",
-        initialDuration: 1000,
+        duration: 1000,
         title: "Timer 1",
       },
       {
         id: "2",
-        initialDuration: 2000,
+        duration: 2000,
         title: "Timer 2",
       },
     ]),
   );
 
-  expect(result.current.timerConfigIndex).toBe(0);
-  expect(result.current.nextTimerConfigIndex).toBe(1);
+  expect(result.current.currentTimerIntervalIndex).toBe(0);
+  expect(result.current.nextTimerIntervalIndex).toBe(1);
   expect(result.current.numIterationsLeft).toBe(numIterations);
 });
 
 it("should advance to the next timer when onTimerFinished is called", () => {
   const numIterations = 3;
   const { result } = renderHook(() =>
-    useTimers(numIterations, [
+    useSequentialTimerIntervals(numIterations, [
       {
         id: "1",
-        initialDuration: 1000,
+        duration: 1000,
         title: "Timer 1",
       },
       {
         id: "2",
-        initialDuration: 2000,
+        duration: 2000,
         title: "Timer 2",
       },
     ]),
@@ -46,23 +46,23 @@ it("should advance to the next timer when onTimerFinished is called", () => {
     result.current.onTimerFinished();
   });
 
-  expect(result.current.timerConfigIndex).toBe(1);
-  expect(result.current.nextTimerConfigIndex).toBe(0);
+  expect(result.current.currentTimerIntervalIndex).toBe(1);
+  expect(result.current.nextTimerIntervalIndex).toBe(0);
   expect(result.current.numIterationsLeft).toBe(numIterations);
 });
 
 it("should decrement iterations when a cycle is completed", () => {
   const numIterations = 3;
   const { result } = renderHook(() =>
-    useTimers(numIterations, [
+    useSequentialTimerIntervals(numIterations, [
       {
         id: "1",
-        initialDuration: 1000,
+        duration: 1000,
         title: "Timer 1",
       },
       {
         id: "2",
-        initialDuration: 2000,
+        duration: 2000,
         title: "Timer 2",
       },
     ]),
@@ -76,22 +76,22 @@ it("should decrement iterations when a cycle is completed", () => {
     result.current.onTimerFinished();
   });
 
-  expect(result.current.timerConfigIndex).toBe(0);
-  expect(result.current.nextTimerConfigIndex).toBe(1);
+  expect(result.current.currentTimerIntervalIndex).toBe(0);
+  expect(result.current.nextTimerIntervalIndex).toBe(1);
   expect(result.current.numIterationsLeft).toBe(numIterations - 1);
 });
 
 it("should not change index or iterations when no iterations are left", () => {
   const { result } = renderHook(() =>
-    useTimers(1, [
+    useSequentialTimerIntervals(1, [
       {
         id: "1",
-        initialDuration: 1000,
+        duration: 1000,
         title: "Timer 1",
       },
       {
         id: "2",
-        initialDuration: 2000,
+        duration: 2000,
         title: "Timer 2",
       },
     ]),
@@ -105,68 +105,73 @@ it("should not change index or iterations when no iterations are left", () => {
     result.current.onTimerFinished();
   });
 
-  expect(result.current.timerConfigIndex).toBe(0);
+  expect(result.current.currentTimerIntervalIndex).toBe(0);
   expect(result.current.numIterationsLeft).toBe(0);
 
   act(() => {
     result.current.onTimerFinished();
   });
 
-  expect(result.current.timerConfigIndex).toBe(0);
+  expect(result.current.currentTimerIntervalIndex).toBe(0);
   expect(result.current.numIterationsLeft).toBe(0);
 });
 
-it("should reset all values when onResetAll is called", () => {
-  const numIterations = 3;
-  const { result } = renderHook(() =>
-    useTimers(numIterations, [
+it.each([
+  [
+    [
       {
         id: "1",
-        initialDuration: 1000,
+        duration: 1000,
         title: "Timer 1",
       },
       {
         id: "2",
-        initialDuration: 2000,
+        duration: 2000,
         title: "Timer 2",
       },
-    ]),
-  );
+    ],
+  ],
+  [
+    [
+      {
+        id: "1",
+        duration: 1000,
+        title: "Timer 1",
+      },
+    ],
+  ],
+  [[]],
+])("should reset all values when timer intervals = %o and onResetAll is called", (timerIntervals) => {
+  const numIterations = 3;
+  const { result } = renderHook(() => useSequentialTimerIntervals(numIterations, timerIntervals));
 
-  act(() => {
-    result.current.onTimerFinished();
+  timerIntervals.forEach(() => {
+    act(() => {
+      result.current.onTimerFinished();
+    });
   });
 
-  act(() => {
-    result.current.onTimerFinished();
-  });
-
-  expect(result.current.timerConfigIndex).toBe(0);
-  expect(result.current.numIterationsLeft).toBe(numIterations - 1);
+  expect(result.current.currentTimerIntervalIndex).toBe(0);
+  expect(result.current.numIterationsLeft).toBe(timerIntervals.length ? numIterations - 1 : numIterations);
 
   act(() => {
-    result.current.onResetAll?.();
+    result.current.onResetAll();
   });
 
-  expect(result.current.timerConfigIndex).toBe(0);
+  expect(result.current.currentTimerIntervalIndex).toBe(0);
   expect(result.current.numIterationsLeft).toBe(numIterations);
 });
 
-it("should have onResetAll as undefined if no timer configs are provided", () => {
-  const { result } = renderHook(() => useTimers(3, []));
-  expect(result.current.onResetAll).toBeUndefined();
-});
+it("should handle an empty timerIntervals array", () => {
+  const { result } = renderHook(() => useSequentialTimerIntervals(3, []));
 
-it("should handle an empty timerConfigs array gracefully", () => {
-  const { result } = renderHook(() => useTimers(3, []));
-
-  expect(result.current.timerConfigIndex).toBe(0);
-  expect(result.current.nextTimerConfigIndex).toBe(0);
+  expect(result.current.currentTimerIntervalIndex).toBe(0);
+  expect(result.current.nextTimerIntervalIndex).toBe(0);
 
   act(() => {
     result.current.onTimerFinished();
   });
 
-  expect(result.current.timerConfigIndex).toBe(0);
-  expect(result.current.nextTimerConfigIndex).toBe(0);
+  expect(result.current.currentTimerIntervalIndex).toBe(0);
+  expect(result.current.nextTimerIntervalIndex).toBe(0);
 });
