@@ -15,19 +15,19 @@ export function useGetTimersContext() {
 export function useSetTimersContext() {
   const timersContext = useContext<Partial<TimersContextType>>(TimersContext);
 
-  if (timersContext === undefined || timersContext.setTimers === undefined) {
+  if (timersContext === undefined || timersContext.updateTimers === undefined) {
     throw new Error("useSetTimersContext must be used within a TimersContextProvider");
   }
 
-  return timersContext.setTimers;
+  return timersContext.updateTimers;
 }
 
 export function useTimersContext() {
   const timersContext = useContext<Partial<TimersContextType>>(TimersContext);
 
-  if (timersContext === undefined || timersContext.timers === undefined || timersContext.setTimers === undefined) {
+  if (timersContext === undefined || timersContext.timers === undefined || timersContext.updateTimers === undefined) {
     throw new Error("useTimersContext must be used within a TimersContextProvider");
   }
 
-  return [timersContext.timers, timersContext.setTimers] as const;
+  return [timersContext.timers, timersContext.updateTimers] as const;
 }

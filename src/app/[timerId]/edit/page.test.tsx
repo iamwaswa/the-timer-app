@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { notFound, useParams } from "next/navigation";
 
-import { useGetTimers } from "@/hooks";
+import { useGetTimersContext } from "@/context";
 
 import EditTimerPage from "./page";
 
@@ -15,12 +15,12 @@ const useParamsMock = vi.mocked(useParams);
 
 const notFoundMock = vi.mocked(notFound);
 
-vi.mock("@/hooks", () => ({
-  ...vi.importActual("@/hooks"),
-  useGetTimers: vi.fn(),
+vi.mock("@/context", () => ({
+  ...vi.importActual("@/context"),
+  useGetTimersContext: vi.fn(),
 }));
 
-const useGetTimersMock = vi.mocked(useGetTimers);
+const useGetTimersContextMock = vi.mocked(useGetTimersContext);
 
 vi.mock("@/components", () => ({
   ...vi.importActual("@/components"),
@@ -37,7 +37,7 @@ it("should render the edit timer form with the correct timer data", () => {
     { id: "2", initialDuration: 120, numIterations: 3, timerConfigs: [], title: "Timer 2" },
   ];
   useParamsMock.mockReturnValue({ timerId: mockTimers[0].id });
-  useGetTimersMock.mockReturnValue([mockTimers, ""]);
+  useGetTimersContextMock.mockReturnValue(mockTimers);
 
   render(<EditTimerPage />);
 
@@ -51,7 +51,7 @@ it("should call notFound when the timer does not exist", () => {
     { id: "2", initialDuration: 120, numIterations: 3, timerConfigs: [], title: "Timer 2" },
   ];
   useParamsMock.mockReturnValue({ timerId: "3" });
-  useGetTimersMock.mockReturnValue([mockTimers, ""]);
+  useGetTimersContextMock.mockReturnValue(mockTimers);
 
   expect(notFoundMock).not.toHaveBeenCalled();
 

@@ -2,17 +2,16 @@
 
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 
 import type { TimerType } from "@/types";
 
 type DeleteTimerPromptProps = {
-  timersKey: string;
   timer: TimerType;
   timers: TimerType[];
+  setTimers(timers: TimerType[]): void;
 };
 
-export function DeleteTimerPrompt({ timer, timers, timersKey }: DeleteTimerPromptProps) {
+export function DeleteTimerPrompt({ timer, timers, setTimers }: DeleteTimerPromptProps) {
   return (
     <Dialog open={true}>
       <DialogTitle>{timer.title}</DialogTitle>
@@ -24,11 +23,7 @@ export function DeleteTimerPrompt({ timer, timers, timersKey }: DeleteTimerPromp
         <Button
           color="error"
           onClick={() => {
-            localStorage.setItem(
-              timersKey,
-              JSON.stringify(timers.filter((existingTimer) => existingTimer.id !== timer.id)),
-            );
-            redirect("/");
+            setTimers(timers.filter((existingTimer) => existingTimer.id !== timer.id));
           }}
         >
           Delete

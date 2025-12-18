@@ -1,8 +1,8 @@
 "use client";
 
-import { notFound, useParams } from "next/navigation";
+import { redirect, useParams } from "next/navigation";
 
-import { useGetTimers } from "@/hooks";
+import { useTimersContext } from "@/context";
 
 import { DeleteTimerPrompt } from "./components";
 
@@ -11,13 +11,13 @@ type DeleteTimerPageParams = {
 };
 
 export default function DeleteTimerPage() {
-  const [timers, key] = useGetTimers();
+  const [timers, setTimers] = useTimersContext();
   const { timerId } = useParams<DeleteTimerPageParams>();
   const timer = timers.find((t) => t.id === timerId);
 
   if (!timer) {
-    return notFound();
+    return redirect("/");
   }
 
-  return <DeleteTimerPrompt timer={timer} timers={timers} timersKey={key} />;
+  return <DeleteTimerPrompt timer={timer} timers={timers} setTimers={setTimers} />;
 }

@@ -1,15 +1,15 @@
 import { useCallback, useState } from "react";
 
-import { useGetTimers } from "@/hooks";
+import { useTimersContext } from "@/context";
 import type { TimerConfig, TimerType } from "@/types";
 import { generateRandomUUID } from "@/utils";
 
 export function useTimerForm(initialValue?: TimerType) {
-  const [timers, key] = useGetTimers();
+  const [timers, setTimers] = useTimersContext();
 
   const [formState, setFormState] = useState<TimerType>({
     id: initialValue?.id ?? generateRandomUUID(),
-    numIterations: initialValue?.numIterations ? Number(initialValue.numIterations) : 1,
+    numIterations: initialValue?.numIterations !== undefined ? Number(initialValue.numIterations) : 1,
     title: initialValue?.title ?? "New timer",
     timerConfigs: initialValue?.timerConfigs ?? [
       {
@@ -43,15 +43,12 @@ export function useTimerForm(initialValue?: TimerType) {
 
   const save = useCallback(() => {
     const hasTimer = timers.some((existingTimer) => existingTimer.id === formState.id);
-    localStorage.setItem(
-      key,
-      JSON.stringify(
-        hasTimer
-          ? timers.map((existingTimer) => (existingTimer.id === formState.id ? formState : existingTimer))
-          : [...timers, formState],
-      ),
+    setTimers(
+      hasTimer
+        ? timers.map((existingTimer) => (existingTimer.id === formState.id ? formState : existingTimer))
+        : [...timers, formState],
     );
-  }, [key, formState, timers]);
+  }, [formState, timers, setTimers]);
 
   return [formState, { save, updateNumIterations, updateTimerConfigs, updateTitle }] as const;
 }

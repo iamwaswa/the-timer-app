@@ -1,24 +1,23 @@
 import { renderHook } from "@testing-library/react";
 import { act } from "react";
 
-import * as useGetTimersHookModule from "@/hooks/get-timers/get-timers.hook";
+import * as TimersContextHookModule from "@/context/timers/timers.context.hook";
 import type { TimerConfig, TimerType } from "@/types";
 import * as generateRandomUUIDUtilModule from "@/utils/generate-random-uuid/generate-random-uuid.util";
 
 import { useTimerForm } from "./timer-form.hook";
 
-const setItemSpy = vi.spyOn(Storage.prototype, "setItem");
-const useGetTimersSpy = vi.spyOn(useGetTimersHookModule, "useGetTimers");
+const useTimersContextSpy = vi.spyOn(TimersContextHookModule, "useTimersContext");
 const generateRandomUUIDSpy = vi.spyOn(generateRandomUUIDUtilModule, "generateRandomUUID");
 
 beforeEach(() => {
-  vi.clearAllMocks();
+  vi.resetAllMocks();
 });
 
 it("should initialize with a default state when no initial value is provided", () => {
   const id = "uuid-1";
   generateRandomUUIDSpy.mockImplementation(() => id);
-  useGetTimersSpy.mockImplementation(() => [[], "timers"]);
+  useTimersContextSpy.mockImplementation(() => [[], vi.fn()]);
 
   const { result } = renderHook(() => useTimerForm());
 
@@ -39,7 +38,7 @@ it("should initialize with a default state when no initial value is provided", (
 it("should initialize with the initialValue when one is provided", () => {
   const id = "existing-timer-id";
   generateRandomUUIDSpy.mockImplementation(() => id);
-  useGetTimersSpy.mockImplementation(() => [[], "timers"]);
+  useTimersContextSpy.mockImplementation(() => [[], vi.fn()]);
 
   const initialValue: TimerType = {
     id,
@@ -60,51 +59,68 @@ it("should initialize with the initialValue when one is provided", () => {
 
 it("should update the number of iterations", () => {
   generateRandomUUIDSpy.mockImplementation(() => "");
-  useGetTimersSpy.mockImplementation(() => [[], "timers"]);
+  const setTimers = vi.fn();
+  useTimersContextSpy.mockImplementation(() => [[], setTimers]);
 
   const { result } = renderHook(() => useTimerForm());
 
+  expect(setTimers).not.toHaveBeenCalled();
+
+  const updatedNumIterations = 5;
   act(() => {
-    result.current[1].updateNumIterations(5);
+    result.current[1].updateNumIterations(updatedNumIterations);
   });
 
-  expect(result.current[0].numIterations).toBe(5);
+  expect(result.current[0].numIterations).toBe(updatedNumIterations);
+  expect(setTimers).not.toHaveBeenCalled();
 });
 
 it("should update the timer configs", () => {
   generateRandomUUIDSpy.mockImplementation(() => "");
-  useGetTimersSpy.mockImplementation(() => [[], "timers"]);
+  const setTimers = vi.fn();
+  useTimersContextSpy.mockImplementation(() => [[], setTimers]);
 
   const { result } = renderHook(() => useTimerForm());
   const newTimerConfigs: TimerConfig[] = [{ id: "new-config", initialDuration: 30, title: "New Config" }];
+
+  expect(setTimers).not.toHaveBeenCalled();
 
   act(() => {
     result.current[1].updateTimerConfigs(newTimerConfigs);
   });
 
   expect(result.current[0].timerConfigs).toEqual(newTimerConfigs);
+  expect(setTimers).not.toHaveBeenCalled();
 });
 
 it("should update the title", () => {
   generateRandomUUIDSpy.mockImplementation(() => "");
-  useGetTimersSpy.mockImplementation(() => [[], "timers"]);
+  const setTimers = vi.fn();
+  useTimersContextSpy.mockImplementation(() => [[], setTimers]);
 
   const { result } = renderHook(() => useTimerForm());
 
+  expect(setTimers).not.toHaveBeenCalled();
+
+  const updatedTitle = "Updated Title";
   act(() => {
-    result.current[1].updateTitle("Updated Title");
+    result.current[1].updateTitle(updatedTitle);
   });
 
-  expect(result.current[0].title).toBe("Updated Title");
+  expect(result.current[0].title).toBe(updatedTitle);
+  expect(setTimers).not.toHaveBeenCalled();
 });
 
 it("should save a new timer to localStorage if it's a new timer", () => {
   const id1 = "uuid-1";
   const id2 = "uuid-2";
   generateRandomUUIDSpy.mockImplementationOnce(() => id1).mockImplementationOnce(() => id2);
-  useGetTimersSpy.mockImplementation(() => [[], "timers"]);
+  const setTimers = vi.fn();
+  useTimersContextSpy.mockImplementation(() => [[], setTimers]);
 
   const { result } = renderHook(() => useTimerForm());
+
+  expect(setTimers).not.toHaveBeenCalled();
 
   act(() => {
     result.current[1].save();
@@ -123,7 +139,8 @@ it("should save a new timer to localStorage if it's a new timer", () => {
     ],
   };
 
-  expect(setItemSpy).toHaveBeenCalledWith("timers", JSON.stringify([expectedNewTimer]));
+  expect(setTimers).toHaveBeenCalledTimes(1);
+  expect(setTimers).toHaveBeenCalledWith([expectedNewTimer]);
 });
 
 it("should update an existing timer in localStorage if the timer already exists", () => {
@@ -143,14 +160,19 @@ it("should update an existing timer in localStorage if the timer already exists"
     },
   ];
   generateRandomUUIDSpy.mockImplementation(() => id);
-  useGetTimersSpy.mockImplementation(() => [existingTimers, "timers"]);
+  const setTimers = vi.fn();
+  useTimersContextSpy.mockImplementation(() => [existingTimers, setTimers]);
 
   const { result } = renderHook(() => useTimerForm(existingTimers[0]));
+
+  expect(setTimers).not.toHaveBeenCalled();
 
   const title = "Updated Title";
   act(() => {
     result.current[1].updateTitle(title);
   });
+
+  expect(setTimers).not.toHaveBeenCalled();
 
   act(() => {
     result.current[1].save();
@@ -160,5 +182,6 @@ it("should update an existing timer in localStorage if the timer already exists"
     existingTimer.id === id ? { ...existingTimer, title } : existingTimer,
   );
 
-  expect(setItemSpy).toHaveBeenCalledWith("timers", JSON.stringify(updatedTimers));
+  expect(setTimers).toHaveBeenCalledTimes(1);
+  expect(setTimers).toHaveBeenCalledWith(updatedTimers);
 });

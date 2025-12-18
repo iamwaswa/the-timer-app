@@ -1,16 +1,21 @@
 import { render, screen } from "@testing-library/react";
 
-import { useGetItemHeight, useGetTimers } from "@/hooks";
+import { useGetTimersContext } from "@/context";
+import { useGetItemHeight } from "@/hooks";
 
 import { Timers, TimersClientOnlyComponent } from "./timers";
 
-vi.mock("@/hooks", () => ({
-  ...vi.importActual("@/hooks"),
-  useGetTimers: vi.fn(),
-  useGetItemHeight: vi.fn(),
+vi.mock("@/context", () => ({
+  ...vi.importActual("@/context"),
+  useGetTimersContext: vi.fn(),
 }));
 
-const useGetTimersMock = vi.mocked(useGetTimers);
+const useGetTimersContextMock = vi.mocked(useGetTimersContext);
+
+vi.mock("@/hooks", () => ({
+  ...vi.importActual("@/hooks"),
+  useGetItemHeight: vi.fn(),
+}));
 
 const useGetItemHeightMock = vi.mocked(useGetItemHeight);
 
@@ -43,7 +48,7 @@ it("should render a list of timers and the add new timer button", () => {
       timerConfigs: [],
     },
   ];
-  useGetTimersMock.mockReturnValue([mockTimers, ""]);
+  useGetTimersContextMock.mockReturnValue(mockTimers);
   useGetItemHeightMock.mockReturnValue(100);
 
   render(<Timers parentElementId="test-parent" />);
@@ -53,7 +58,7 @@ it("should render a list of timers and the add new timer button", () => {
 });
 
 it("should render no timers if there are none", () => {
-  useGetTimersMock.mockReturnValue([[], ""]);
+  useGetTimersContextMock.mockReturnValue([]);
   useGetItemHeightMock.mockReturnValue(100);
 
   render(<Timers parentElementId="test-parent" />);
@@ -77,7 +82,7 @@ it("should render the client-only component asynchronously", async () => {
       timerConfigs: [],
     },
   ];
-  useGetTimersMock.mockReturnValue([mockTimers, ""]);
+  useGetTimersContextMock.mockReturnValue(mockTimers);
   useGetItemHeightMock.mockReturnValue(100);
 
   render(<TimersClientOnlyComponent parentElementId="test-parent" />);

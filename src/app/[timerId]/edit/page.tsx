@@ -4,14 +4,14 @@ import { Box, Typography } from "@mui/material";
 import { notFound, useParams } from "next/navigation";
 
 import { TimerForm } from "@/components";
-import { useGetTimers } from "@/hooks";
+import { useGetTimersContext } from "@/context";
 
 type EditTimerPageParams = {
   timerId: string;
 };
 
 export default function EditTimerPage() {
-  const [timers] = useGetTimers();
+  const timers = useGetTimersContext();
   const { timerId } = useParams<EditTimerPageParams>();
   const timer = timers.find((t) => t.id === timerId);
 

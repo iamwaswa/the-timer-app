@@ -1,6 +1,5 @@
 import { render, screen } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
-import { redirect } from "next/navigation";
 
 import { DeleteTimerPrompt } from "./delete-timer-prompt";
 
@@ -10,8 +9,6 @@ vi.mock("next/navigation", () => ({
   ...vi.importActual("next/navigation"),
   redirect: vi.fn(),
 }));
-
-const redirectMock = vi.mocked(redirect);
 
 beforeEach(() => {
   originalWindowLocalStorage = window.localStorage;
@@ -43,7 +40,7 @@ it("should render the delete timer prompt with the correct title", () => {
     },
   ];
 
-  render(<DeleteTimerPrompt timer={timers[0]} timers={timers} timersKey="timers" />);
+  render(<DeleteTimerPrompt timer={timers[0]} timers={timers} setTimers={vi.fn()} />);
 
   expect(screen.getByRole("heading", { level: 2, name: timers[0].title })).toBeInTheDocument();
 });
@@ -66,12 +63,13 @@ it("should have cancel button set up to link to '/'", async () => {
     },
   ];
 
-  render(<DeleteTimerPrompt timer={timers[0]} timers={timers} timersKey="timers" />);
+  render(<DeleteTimerPrompt timer={timers[0]} timers={timers} setTimers={vi.fn()} />);
 
   expect(screen.getByRole("link", { name: "Cancel" })).toHaveAttribute("href", "/");
 });
 
-it("should remove the timer from localStorage and redirect when delete button is clicked", async () => {
+it("should remove the timer when delete button is clicked", async () => {
+  const setTimers = vi.fn();
   const event = userEvent.setup();
   const timers = [
     {
@@ -89,18 +87,13 @@ it("should remove the timer from localStorage and redirect when delete button is
       title: "Timer 2",
     },
   ];
-  Object.defineProperty(window, "localStorage", {
-    value: {
-      setItem: vi.fn(),
-    },
-    configurable: true,
-  });
 
-  render(<DeleteTimerPrompt timer={timers[0]} timers={timers} timersKey="timers" />);
+  render(<DeleteTimerPrompt timer={timers[0]} timers={timers} setTimers={setTimers} />);
+
+  expect(setTimers).not.toHaveBeenCalled();
 
   await event.click(screen.getByRole("button", { name: "Delete" }));
 
-  expect(localStorage.setItem).toHaveBeenCalledTimes(1);
-  expect(localStorage.setItem).toHaveBeenCalledWith("timers", JSON.stringify([timers[1]]));
-  expect(redirectMock).toHaveBeenCalledWith("/");
+  expect(setTimers).toHaveBeenCalledTimes(1);
+  expect(setTimers).toHaveBeenCalledWith([timers[1]]);
 });

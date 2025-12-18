@@ -21,7 +21,7 @@ export function TimersContextProvider({ children }: PropsWithChildren) {
     <TimersContext.Provider
       value={{
         timers,
-        setTimers(updatedTimers) {
+        updateTimers(updatedTimers) {
           setTimers(updatedTimers);
           persistTimersToLocalStorage(updatedTimers);
         },

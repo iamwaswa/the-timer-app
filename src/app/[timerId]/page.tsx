@@ -2,7 +2,7 @@
 
 import { notFound, useParams } from "next/navigation";
 
-import { useGetTimers } from "@/hooks";
+import { useGetTimersContext } from "@/context";
 
 import { Timers } from "./components";
 
@@ -11,7 +11,7 @@ type TimerPageParams = {
 };
 
 export default function TimerPage() {
-  const [timers] = useGetTimers();
+  const timers = useGetTimersContext();
   const { timerId } = useParams<TimerPageParams>();
   const timer = timers.find((t) => t.id === timerId);
 

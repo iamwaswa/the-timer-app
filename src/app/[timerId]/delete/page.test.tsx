@@ -1,26 +1,26 @@
 import { render, screen } from "@testing-library/react";
-import { notFound, useParams } from "next/navigation";
+import { redirect, useParams } from "next/navigation";
 
-import { useGetTimers } from "@/hooks";
+import { useTimersContext } from "@/context";
 
 import DeleteTimerPage from "./page";
 
 vi.mock("next/navigation", () => ({
   ...vi.importActual("next/navigation"),
+  redirect: vi.fn(),
   useParams: vi.fn(),
-  notFound: vi.fn(),
 }));
+
+const redirectMock = vi.mocked(redirect);
 
 const useParamsMock = vi.mocked(useParams);
 
-const notFoundMock = vi.mocked(notFound);
-
-vi.mock("@/hooks", () => ({
-  ...vi.importActual("@/hooks"),
-  useGetTimers: vi.fn(),
+vi.mock("@/context", () => ({
+  ...vi.importActual("@/context"),
+  useTimersContext: vi.fn(),
 }));
 
-const useGetTimersMock = vi.mocked(useGetTimers);
+const useTimersContextMock = vi.mocked(useTimersContext);
 
 vi.mock("./components", () => ({
   ...vi.importActual("./components"),
@@ -49,14 +49,14 @@ it("should render DeleteTimerPrompt when timer is found", () => {
     },
   ];
   useParamsMock.mockReturnValue({ timerId: "1" });
-  useGetTimersMock.mockReturnValue([timers, "timers-key"]);
+  useTimersContextMock.mockReturnValue([timers, vi.fn()]);
 
   render(<DeleteTimerPage />);
 
   expect(screen.getByTestId("delete-timer-prompt")).toBeInTheDocument();
 });
 
-it("should call notFound when timer is not found", () => {
+it('should redirect to "/" when timer is not found', () => {
   const timers = [
     {
       id: "1",
@@ -74,9 +74,12 @@ it("should call notFound when timer is not found", () => {
     },
   ];
   useParamsMock.mockReturnValue({ timerId: "3" });
-  useGetTimersMock.mockReturnValue([timers, "timers-key"]);
+  useTimersContextMock.mockReturnValue([timers, vi.fn()]);
+
+  expect(redirectMock).not.toHaveBeenCalled();
 
   render(<DeleteTimerPage />);
 
-  expect(notFoundMock).toHaveBeenCalled();
+  expect(redirectMock).toHaveBeenCalledTimes(1);
+  expect(redirectMock).toHaveBeenCalledWith("/");
 });

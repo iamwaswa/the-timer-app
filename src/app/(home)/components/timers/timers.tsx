@@ -3,7 +3,8 @@
 import { Grid } from "@mui/material";
 import dynamic from "next/dynamic";
 
-import { useGetItemHeight, useGetTimers } from "@/hooks";
+import { useGetTimersContext } from "@/context";
+import { useGetItemHeight } from "@/hooks";
 
 import { AddNewTimer } from "../add-new-timer";
 import { TimerLink } from "../timer-link";
@@ -17,7 +18,7 @@ export const TimersClientOnlyComponent = dynamic(() => Promise.resolve(Timers), 
 });
 
 export function Timers({ parentElementId }: TimersProps) {
-  const [timers] = useGetTimers();
+  const timers = useGetTimersContext();
   const itemHeight = useGetItemHeight(parentElementId);
 
   return (

@@ -4,6 +4,7 @@ import { ThemeProvider } from "@mui/material/styles";
 import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
 
+import { TimersContextProviderClientOnlyComponent } from "@/context/timers/timers.context.provider";
 import { theme } from "@/theme";
 
 const font = Roboto({
@@ -28,16 +29,18 @@ export default function RootLayout({
         <AppRouterCacheProvider>
           <ThemeProvider theme={theme}>
             <CssBaseline />
-            <Box
-              component="main"
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                minHeight: "100dvh",
-              }}
-            >
-              {children}
-            </Box>
+            <TimersContextProviderClientOnlyComponent>
+              <Box
+                component="main"
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  minHeight: "100dvh",
+                }}
+              >
+                {children}
+              </Box>
+            </TimersContextProviderClientOnlyComponent>
           </ThemeProvider>
         </AppRouterCacheProvider>
       </body>
