@@ -4,7 +4,7 @@ import { ThemeProvider } from "@mui/material/styles";
 import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
 
-import { TimersContextProviderClientOnlyComponent } from "@/context/timers/timers.context.provider";
+import { TimersContextProviderClientOnlyComponent } from "@/context";
 import { theme } from "@/theme";
 
 const font = Roboto({
