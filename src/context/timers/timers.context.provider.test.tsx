@@ -49,10 +49,9 @@ it("should save timers to localStorage when they are updated", async () => {
   const initialTimers = [
     {
       id: "initial-timer-1",
-      initialDuration: 100,
       numIterations: 12,
       title: "Initial Timer 1",
-      timerConfigs: [{ id: "initial-timer-config-1", initialDuration: 1000, title: "initial config 1" }],
+      timerIntervals: [{ id: "initial-timer-interval-1", duration: 1000, title: "initial interval 1" }],
     },
   ];
   Object.defineProperty(window, "localStorage", {

@@ -36,15 +36,13 @@ it("should render DeleteTimerPrompt when timer is found", () => {
     {
       id: "1",
       numIterations: 3,
-      initialDuration: 60,
-      timerConfigs: [],
+      timerIntervals: [],
       title: "Timer 1",
     },
     {
       id: "2",
       numIterations: 3,
-      initialDuration: 120,
-      timerConfigs: [],
+      timerIntervals: [],
       title: "Timer 2",
     },
   ];
@@ -61,15 +59,13 @@ it('should redirect to "/" when timer is not found', () => {
     {
       id: "1",
       numIterations: 3,
-      initialDuration: 60,
-      timerConfigs: [],
+      timerIntervals: [],
       title: "Timer 1",
     },
     {
       id: "2",
       numIterations: 3,
-      initialDuration: 120,
-      timerConfigs: [],
+      timerIntervals: [],
       title: "Timer 2",
     },
   ];

@@ -5,30 +5,32 @@ import { Box, Button, TextField } from "@mui/material";
 import type { TimerInterval } from "@/types";
 import { generateRandomUUID } from "@/utils";
 
-type TimerConfigFormFieldsProps = {
-  timerConfigs: TimerInterval[];
-  updateTimerConfigs(timerConfigs: TimerInterval[]): void;
+type TimerIntervalFormFieldsProps = {
+  timerIntervals: TimerInterval[];
+  updateTimerIntervals(updatedTimerIntervals: TimerInterval[]): void;
 };
 
-export function TimerConfigFormFields({ timerConfigs, updateTimerConfigs }: TimerConfigFormFieldsProps) {
-  const hasSingleTimerConfig = timerConfigs.length === 1;
+export function TimerIntervalFormFields({ timerIntervals, updateTimerIntervals }: TimerIntervalFormFieldsProps) {
+  const hasSingleTimerInterval = timerIntervals.length === 1;
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
       <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-        {timerConfigs.map((timerConfig) => (
-          <Box key={timerConfig.id} sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
+        {timerIntervals.map((timerIntervalEntry) => (
+          <Box key={timerIntervalEntry.id} sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
             <TextField
               label="Title"
               required={true}
               sx={{ flexGrow: 1 }}
               type="text"
               variant="outlined"
-              value={timerConfig.title}
+              value={timerIntervalEntry.title}
               onChange={(event) =>
-                updateTimerConfigs(
-                  timerConfigs.map((config) =>
-                    timerConfig.id === config.id ? { ...config, title: event.currentTarget.value } : config,
+                updateTimerIntervals(
+                  timerIntervals.map((timerInterval) =>
+                    timerIntervalEntry.id === timerInterval.id
+                      ? { ...timerInterval, title: event.currentTarget.value }
+                      : timerInterval,
                   ),
                 )
               }
@@ -39,25 +41,29 @@ export function TimerConfigFormFields({ timerConfigs, updateTimerConfigs }: Time
               sx={{ flexGrow: 1 }}
               type="number"
               variant="outlined"
-              value={timerConfig.duration}
+              value={timerIntervalEntry.duration}
               onChange={(event) =>
-                updateTimerConfigs(
-                  timerConfigs.map((config) =>
-                    config.id === timerConfig.id
+                updateTimerIntervals(
+                  timerIntervals.map((timerInterval) =>
+                    timerInterval.id === timerIntervalEntry.id
                       ? {
-                          ...config,
+                          ...timerInterval,
                           duration: Number(event.currentTarget.value),
                         }
-                      : config,
+                      : timerInterval,
                   ),
                 )
               }
             />
             <Button
-              disabled={hasSingleTimerConfig}
+              disabled={hasSingleTimerInterval}
               type="button"
               variant="text"
-              onClick={() => updateTimerConfigs(timerConfigs.filter((config) => config.id !== timerConfig.id))}
+              onClick={() =>
+                updateTimerIntervals(
+                  timerIntervals.filter((timerInterval) => timerInterval.id !== timerIntervalEntry.id),
+                )
+              }
             >
               Delete timer
             </Button>
@@ -68,12 +74,12 @@ export function TimerConfigFormFields({ timerConfigs, updateTimerConfigs }: Time
         type="button"
         variant="outlined"
         onClick={() =>
-          updateTimerConfigs([
-            ...timerConfigs,
+          updateTimerIntervals([
+            ...timerIntervals,
             {
               id: generateRandomUUID(),
-              title: "New interval",
               duration: 60,
+              title: "New interval",
             },
           ])
         }

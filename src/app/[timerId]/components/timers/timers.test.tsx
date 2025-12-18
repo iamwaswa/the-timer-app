@@ -39,14 +39,14 @@ it("should render as expected", () => {
     onTimerFinished,
   });
 
-  render(<Timers numIterations={2} timerConfigs={timerIntervals} />);
+  render(<Timers numIterations={2} timerIntervals={timerIntervals} />);
 
   expect(TimerMock).toHaveBeenCalledWith(
     expect.objectContaining({
-      nextTimerConfig: timerIntervals[1],
+      nextTimerInterval: timerIntervals[1],
       shouldShowNextTimer: true,
       shouldStartPlaying: false,
-      timerConfig: timerIntervals[0],
+      timerInterval: timerIntervals[0],
       onResetAll: undefined,
       onTimerFinished,
     }),
@@ -70,14 +70,14 @@ it("should set shouldStartPlaying to false when it's the first timer and the fir
     onTimerFinished,
   });
 
-  render(<Timers numIterations={2} timerConfigs={timerIntervals} />);
+  render(<Timers numIterations={2} timerIntervals={timerIntervals} />);
 
   expect(TimerMock).toHaveBeenCalledWith(
     expect.objectContaining({
-      nextTimerConfig: timerIntervals[1],
+      nextTimerInterval: timerIntervals[1],
       shouldShowNextTimer: true,
       shouldStartPlaying: false,
-      timerConfig: timerIntervals[0],
+      timerInterval: timerIntervals[0],
       onResetAll: undefined,
       onTimerFinished,
     }),
@@ -101,14 +101,14 @@ it("should set shouldStartPlaying to true for timers after the first", () => {
     onTimerFinished,
   });
 
-  render(<Timers numIterations={2} timerConfigs={timerIntervals} />);
+  render(<Timers numIterations={2} timerIntervals={timerIntervals} />);
 
   expect(TimerMock).toHaveBeenCalledWith(
     expect.objectContaining({
-      nextTimerConfig: timerIntervals[0],
+      nextTimerInterval: timerIntervals[0],
       shouldShowNextTimer: true,
       shouldStartPlaying: true,
-      timerConfig: timerIntervals[1],
+      timerInterval: timerIntervals[1],
       onResetAll,
       onTimerFinished,
     }),
@@ -132,14 +132,14 @@ it("should set shouldStartPlaying to true for iterations after the first for the
     onTimerFinished,
   });
 
-  render(<Timers numIterations={2} timerConfigs={timerIntervals} />);
+  render(<Timers numIterations={2} timerIntervals={timerIntervals} />);
 
   expect(TimerMock).toHaveBeenCalledWith(
     expect.objectContaining({
-      nextTimerConfig: timerIntervals[1],
+      nextTimerInterval: timerIntervals[1],
       shouldShowNextTimer: true,
       shouldStartPlaying: true,
-      timerConfig: timerIntervals[0],
+      timerInterval: timerIntervals[0],
       onResetAll: undefined,
       onTimerFinished,
     }),
@@ -163,14 +163,14 @@ it("should show the next timer if there are more iterations", () => {
     onTimerFinished,
   });
 
-  render(<Timers numIterations={2} timerConfigs={timerIntervals} />);
+  render(<Timers numIterations={2} timerIntervals={timerIntervals} />);
 
   expect(TimerMock).toHaveBeenCalledWith(
     expect.objectContaining({
-      nextTimerConfig: timerIntervals[0],
+      nextTimerInterval: timerIntervals[0],
       shouldShowNextTimer: true,
       shouldStartPlaying: true,
-      timerConfig: timerIntervals[2],
+      timerInterval: timerIntervals[2],
       onResetAll,
       onTimerFinished,
     }),
@@ -194,14 +194,14 @@ it("should show the next timer if there are more timers in the current iteration
     onTimerFinished,
   });
 
-  render(<Timers numIterations={1} timerConfigs={timerIntervals} />);
+  render(<Timers numIterations={1} timerIntervals={timerIntervals} />);
 
   expect(TimerMock).toHaveBeenCalledWith(
     expect.objectContaining({
-      nextTimerConfig: timerIntervals[1],
+      nextTimerInterval: timerIntervals[1],
       shouldShowNextTimer: true,
       shouldStartPlaying: false,
-      timerConfig: timerIntervals[0],
+      timerInterval: timerIntervals[0],
       onResetAll: undefined,
       onTimerFinished,
     }),
@@ -225,14 +225,14 @@ it("should not show the next timer if it is the last timer of the last iteration
     onTimerFinished,
   });
 
-  render(<Timers numIterations={1} timerConfigs={timerIntervals} />);
+  render(<Timers numIterations={1} timerIntervals={timerIntervals} />);
 
   expect(TimerMock).toHaveBeenCalledWith(
     expect.objectContaining({
-      nextTimerConfig: timerIntervals[0],
+      nextTimerInterval: timerIntervals[0],
       shouldShowNextTimer: false,
       shouldStartPlaying: true,
-      timerConfig: timerIntervals[2],
+      timerInterval: timerIntervals[2],
       onResetAll,
       onTimerFinished,
     }),
@@ -240,7 +240,7 @@ it("should not show the next timer if it is the last timer of the last iteration
   );
 });
 
-it("should set reset all action when timerConfigIndex > 0", () => {
+it("should set reset all action when timerIntervalIndex > 0", () => {
   const timerIntervals = [
     { id: "1", duration: 10, title: "Timer 1" },
     { id: "2", duration: 20, title: "Timer 2" },
@@ -256,14 +256,14 @@ it("should set reset all action when timerConfigIndex > 0", () => {
     onTimerFinished,
   });
 
-  render(<Timers numIterations={1} timerConfigs={timerIntervals} />);
+  render(<Timers numIterations={1} timerIntervals={timerIntervals} />);
 
   expect(TimerMock).toHaveBeenCalledWith(
     expect.objectContaining({
-      nextTimerConfig: timerIntervals[2],
+      nextTimerInterval: timerIntervals[2],
       shouldShowNextTimer: true,
       shouldStartPlaying: true,
-      timerConfig: timerIntervals[1],
+      timerInterval: timerIntervals[1],
       onResetAll,
       onTimerFinished,
     }),
@@ -271,7 +271,7 @@ it("should set reset all action when timerConfigIndex > 0", () => {
   );
 });
 
-it("should not set reset all action when timerConfigIndex is 0", () => {
+it("should not set reset all action when timerIntervalIndex is 0", () => {
   const timerIntervals = [
     { id: "1", duration: 10, title: "Timer 1" },
     { id: "2", duration: 20, title: "Timer 2" },
@@ -287,14 +287,14 @@ it("should not set reset all action when timerConfigIndex is 0", () => {
     onTimerFinished,
   });
 
-  render(<Timers numIterations={1} timerConfigs={timerIntervals} />);
+  render(<Timers numIterations={1} timerIntervals={timerIntervals} />);
 
   expect(TimerMock).toHaveBeenCalledWith(
     expect.objectContaining({
-      nextTimerConfig: timerIntervals[1],
+      nextTimerInterval: timerIntervals[1],
       shouldShowNextTimer: true,
       shouldStartPlaying: false,
-      timerConfig: timerIntervals[0],
+      timerInterval: timerIntervals[0],
       onTimerFinished,
       onResetAll: undefined,
     }),

@@ -3,7 +3,7 @@ import { userEvent } from "@testing-library/user-event";
 
 import { generateRandomUUID } from "@/utils";
 
-import { TimerConfigFormFields } from "./timer-config-form-fields";
+import { TimerIntervalFormFields } from "./timer-interval-form-fields";
 
 vi.mock("@/utils", () => ({
   ...vi.importActual("@/utils"),
@@ -22,108 +22,108 @@ it("should render the form with initial values", () => {
     { id: "2", duration: 20, title: "Timer 2" },
   ];
 
-  render(<TimerConfigFormFields timerConfigs={timerIntervals} updateTimerConfigs={vi.fn()} />);
+  render(<TimerIntervalFormFields timerIntervals={timerIntervals} updateTimerIntervals={vi.fn()} />);
 
   expect(screen.getAllByRole("textbox", { name: /Title/ })).toHaveLength(2);
   expect(screen.getAllByRole("spinbutton", { name: /Initial Duration \(seconds\)/ })).toHaveLength(2);
 });
 
-it("should call updateTimerConfigs when adding a new timer", async () => {
+it("should call updateTimerIntervals when adding a new timer", async () => {
   const event = userEvent.setup();
   const newTimerUuid = "new-uuid";
   generateRandomUUIDMock.mockReturnValue(newTimerUuid);
   const timerIntervals = [{ id: "1", duration: 10, title: "Timer 1" }];
-  const updateTimerConfigs = vi.fn();
+  const updateTimerIntervals = vi.fn();
 
-  render(<TimerConfigFormFields timerConfigs={timerIntervals} updateTimerConfigs={updateTimerConfigs} />);
+  render(<TimerIntervalFormFields timerIntervals={timerIntervals} updateTimerIntervals={updateTimerIntervals} />);
 
   await event.click(screen.getByRole("button", { name: "Add Timer" }));
 
-  expect(updateTimerConfigs).toHaveBeenCalledWith([
+  expect(updateTimerIntervals).toHaveBeenCalledWith([
     ...timerIntervals,
     { id: newTimerUuid, title: "New interval", duration: 60 },
   ]);
 });
 
-it("should call updateTimerConfigs when updating a timer title", async () => {
+it("should call updateTimerIntervals when updating a timer title", async () => {
   const event = userEvent.setup();
 
   let timerIntervals = [
     { id: "1", duration: 10, title: "Timer 1" },
     { id: "2", duration: 20, title: "Timer 2" },
   ];
-  const updateTimerConfigs = vi.fn().mockImplementation((newTimerConfigs) => {
-    timerIntervals = newTimerConfigs;
+  const updateTimerIntervals = vi.fn().mockImplementation((newTimerIntervals) => {
+    timerIntervals = newTimerIntervals;
   });
 
   const { rerender } = render(
-    <TimerConfigFormFields timerConfigs={timerIntervals} updateTimerConfigs={updateTimerConfigs} />,
+    <TimerIntervalFormFields timerIntervals={timerIntervals} updateTimerIntervals={updateTimerIntervals} />,
   );
 
   await event.clear(screen.getAllByRole("textbox", { name: /Title/ })[0]);
 
-  expect(updateTimerConfigs).toHaveBeenLastCalledWith([{ ...timerIntervals[0], title: "" }, timerIntervals[1]]);
+  expect(updateTimerIntervals).toHaveBeenLastCalledWith([{ ...timerIntervals[0], title: "" }, timerIntervals[1]]);
 
-  rerender(<TimerConfigFormFields timerConfigs={timerIntervals} updateTimerConfigs={updateTimerConfigs} />);
+  rerender(<TimerIntervalFormFields timerIntervals={timerIntervals} updateTimerIntervals={updateTimerIntervals} />);
 
   const nextCharacter = "s";
   await event.type(screen.getAllByRole("textbox", { name: /Title/ })[0], nextCharacter);
 
-  expect(updateTimerConfigs).toHaveBeenLastCalledWith([
+  expect(updateTimerIntervals).toHaveBeenLastCalledWith([
     { ...timerIntervals[0], title: nextCharacter },
     timerIntervals[1],
   ]);
 });
 
-it("should call updateTimerConfigs when updating a timer duration", async () => {
+it("should call updateTimerIntervals when updating a timer duration", async () => {
   const event = userEvent.setup();
   let timerIntervals = [
     { id: "1", duration: 10, title: "Timer 1" },
     { id: "2", duration: 20, title: "Timer 2" },
   ];
-  const updateTimerConfigs = vi.fn().mockImplementation((newTimerConfigs) => {
-    timerIntervals = newTimerConfigs;
+  const updateTimerIntervals = vi.fn().mockImplementation((newTimerIntervals) => {
+    timerIntervals = newTimerIntervals;
   });
 
   const { rerender } = render(
-    <TimerConfigFormFields timerConfigs={timerIntervals} updateTimerConfigs={updateTimerConfigs} />,
+    <TimerIntervalFormFields timerIntervals={timerIntervals} updateTimerIntervals={updateTimerIntervals} />,
   );
 
   await event.clear(screen.getAllByRole("spinbutton", { name: /Initial Duration \(seconds\)/ })[0]);
 
-  expect(updateTimerConfigs).toHaveBeenLastCalledWith([{ ...timerIntervals[0], duration: 0 }, timerIntervals[1]]);
+  expect(updateTimerIntervals).toHaveBeenLastCalledWith([{ ...timerIntervals[0], duration: 0 }, timerIntervals[1]]);
 
-  rerender(<TimerConfigFormFields timerConfigs={timerIntervals} updateTimerConfigs={updateTimerConfigs} />);
+  rerender(<TimerIntervalFormFields timerIntervals={timerIntervals} updateTimerIntervals={updateTimerIntervals} />);
 
   const nextCharacter = "1";
   await event.type(screen.getAllByRole("spinbutton", { name: /Initial Duration \(seconds\)/ })[0], nextCharacter);
 
-  expect(updateTimerConfigs).toHaveBeenLastCalledWith([
+  expect(updateTimerIntervals).toHaveBeenLastCalledWith([
     { ...timerIntervals[0], duration: Number(nextCharacter) },
     timerIntervals[1],
   ]);
 });
 
-it("should call updateTimerConfigs when deleting a timer", async () => {
+it("should call updateTimerIntervals when deleting a timer", async () => {
   const event = userEvent.setup();
   const timerIntervals = [
     { id: "1", duration: 10, title: "Timer 1" },
     { id: "2", duration: 20, title: "Timer 2" },
   ];
-  const updateTimerConfigs = vi.fn();
+  const updateTimerIntervals = vi.fn();
 
-  render(<TimerConfigFormFields timerConfigs={timerIntervals} updateTimerConfigs={updateTimerConfigs} />);
+  render(<TimerIntervalFormFields timerIntervals={timerIntervals} updateTimerIntervals={updateTimerIntervals} />);
 
   await event.click(screen.getAllByRole("button", { name: "Delete timer" })[0]);
 
-  expect(updateTimerConfigs).toHaveBeenCalledWith([timerIntervals[1]]);
+  expect(updateTimerIntervals).toHaveBeenCalledWith([timerIntervals[1]]);
 });
 
 it("should disable the delete button when there is only one timer", () => {
   const timerIntervals = [{ id: "1", duration: 10, title: "Timer 1" }];
-  const updateTimerConfigs = vi.fn();
+  const updateTimerIntervals = vi.fn();
 
-  render(<TimerConfigFormFields timerConfigs={timerIntervals} updateTimerConfigs={updateTimerConfigs} />);
+  render(<TimerIntervalFormFields timerIntervals={timerIntervals} updateTimerIntervals={updateTimerIntervals} />);
 
   expect(screen.getByRole("button", { name: "Delete timer" })).toBeDisabled();
 });

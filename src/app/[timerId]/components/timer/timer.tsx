@@ -12,24 +12,24 @@ import { TimerDuration } from "../timer-duration";
 import { TimerTitle } from "../timer-title";
 
 type TimerProps = {
-  nextTimerConfig: TimerInterval;
+  nextTimerInterval: TimerInterval;
   shouldStartPlaying: boolean;
   shouldShowNextTimer: boolean;
-  timerConfig: TimerInterval;
+  timerInterval: TimerInterval;
   onResetAll: (() => void) | undefined;
   onTimerFinished(): void;
 };
 
 export function Timer({
-  nextTimerConfig,
+  nextTimerInterval,
   shouldShowNextTimer,
   shouldStartPlaying,
-  timerConfig,
+  timerInterval,
   onResetAll,
   onTimerFinished,
 }: TimerProps) {
   const { duration, isFinished, isPlaying, resetOrRestartToggle, pause, play, reset, restart } = useTimerInterval(
-    timerConfig,
+    timerInterval,
     shouldStartPlaying,
   );
 
@@ -67,7 +67,7 @@ export function Timer({
               "0%": { transform: "translateX(-100%)" },
               "100%": { transform: "translateX(0%)" },
             },
-            animation: `timer-move ${timerConfig.duration}s linear forwards`,
+            animation: `timer-move ${timerInterval.duration}s linear forwards`,
             animationPlayState: isPlaying ? "running" : "paused",
             backgroundColor,
             height: "100%",
@@ -97,7 +97,7 @@ export function Timer({
             }}
           >
             <TimerDuration backgroundColor={backgroundColor}>{formatDuration(duration)}</TimerDuration>
-            <TimerTitle backgroundColor={backgroundColor}>{timerConfig.title}</TimerTitle>
+            <TimerTitle backgroundColor={backgroundColor}>{timerInterval.title}</TimerTitle>
           </Box>
           <TimerActions
             backgroundColor={backgroundColor}
@@ -118,7 +118,7 @@ export function Timer({
         }}
       >
         <Alert variant="filled" severity="info">
-          <Typography>Up next: {nextTimerConfig.title}</Typography>
+          <Typography>Up next: {nextTimerInterval.title}</Typography>
         </Alert>
       </Snackbar>
     </>

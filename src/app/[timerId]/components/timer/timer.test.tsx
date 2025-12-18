@@ -73,24 +73,24 @@ it.each([true, false])(
     const backgroundColor = "red";
     pickTimerColorMock.mockReturnValue(backgroundColor);
 
-    const timerConfig = {
+    const timerInterval = {
       id: "1",
+      duration: 10,
       title: "Timer 1",
-      initialDuration: 10,
     };
 
-    const nextTimerConfig = {
+    const nextTimerInterval = {
       id: "2",
+      duration: 20,
       title: "Timer 2",
-      initialDuration: 20,
     };
 
     render(
       <Timer
-        nextTimerConfig={nextTimerConfig}
+        nextTimerInterval={nextTimerInterval}
         shouldStartPlaying={false}
         shouldShowNextTimer={false}
-        timerConfig={timerConfig}
+        timerInterval={timerInterval}
         onResetAll={onResetAll}
         onTimerFinished={onTimerFinished}
       />,
@@ -127,24 +127,24 @@ it("should call onTimerFinished when the timer is finished", () => {
   formatDurationMock.mockReturnValue("00:10");
   pickTimerColorMock.mockReturnValue("red");
 
-  const timerConfig = {
+  const timerInterval = {
     id: "1",
+    duration: 10,
     title: "Timer 1",
-    initialDuration: 10,
   };
 
-  const nextTimerConfig = {
+  const nextTimerInterval = {
     id: "2",
+    duration: 20,
     title: "Timer 2",
-    initialDuration: 20,
   };
 
   render(
     <Timer
-      nextTimerConfig={nextTimerConfig}
+      nextTimerInterval={nextTimerInterval}
       shouldStartPlaying={false}
       shouldShowNextTimer={false}
-      timerConfig={timerConfig}
+      timerInterval={timerInterval}
       onResetAll={onResetAll}
       onTimerFinished={onTimerFinished}
     />,
@@ -168,24 +168,24 @@ it("should show the next timer snackbar when shouldShowNextTimer is true", () =>
   formatDurationMock.mockReturnValue("00:10");
   pickTimerColorMock.mockReturnValue("red");
 
-  const timerConfig = {
+  const timerInterval = {
     id: "1",
+    duration: 10,
     title: "Timer 1",
-    initialDuration: 10,
   };
 
-  const nextTimerConfig = {
+  const nextTimerInterval = {
     id: "2",
+    duration: 20,
     title: "Timer 2",
-    initialDuration: 20,
   };
 
   render(
     <Timer
-      nextTimerConfig={nextTimerConfig}
+      nextTimerInterval={nextTimerInterval}
       shouldStartPlaying={false}
       shouldShowNextTimer={true}
-      timerConfig={timerConfig}
+      timerInterval={timerInterval}
       onResetAll={onResetAll}
       onTimerFinished={onTimerFinished}
     />,
@@ -211,24 +211,24 @@ it("should not show the next timer snackbar when shouldShowNextTimer is false", 
   formatDurationMock.mockReturnValue("00:10");
   pickTimerColorMock.mockReturnValue("red");
 
-  const timerConfig = {
+  const timerInterval = {
     id: "1",
+    duration: 10,
     title: "Timer 1",
-    initialDuration: 10,
   };
 
-  const nextTimerConfig = {
+  const nextTimerInterval = {
     id: "2",
+    duration: 20,
     title: "Timer 2",
-    initialDuration: 20,
   };
 
   render(
     <Timer
-      nextTimerConfig={nextTimerConfig}
+      nextTimerInterval={nextTimerInterval}
       shouldStartPlaying={false}
       shouldShowNextTimer={false}
-      timerConfig={timerConfig}
+      timerInterval={timerInterval}
       onResetAll={onResetAll}
       onTimerFinished={onTimerFinished}
     />,
@@ -253,24 +253,24 @@ it("should pass the correct props to TimerActions", () => {
   const backgroundColor = "red";
   pickTimerColorMock.mockReturnValue(backgroundColor);
 
-  const timerConfig = {
+  const timerInterval = {
     id: "1",
+    duration: 10,
     title: "Timer 1",
-    initialDuration: 10,
   };
 
-  const nextTimerConfig = {
+  const nextTimerInterval = {
     id: "2",
+    duration: 20,
     title: "Timer 2",
-    initialDuration: 20,
   };
 
   render(
     <Timer
-      nextTimerConfig={nextTimerConfig}
+      nextTimerInterval={nextTimerInterval}
       shouldStartPlaying={false}
       shouldShowNextTimer={false}
-      timerConfig={timerConfig}
+      timerInterval={timerInterval}
       onResetAll={onResetAll}
       onTimerFinished={onTimerFinished}
     />,

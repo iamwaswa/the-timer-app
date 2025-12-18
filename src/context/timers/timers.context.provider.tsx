@@ -51,18 +51,18 @@ function getTimersFromLocalStorage() {
             typeof item.id === "string" &&
             "numIterations" in item &&
             typeof item.numIterations === "number" &&
-            "timerConfigs" in item &&
-            Array.isArray(item.timerConfigs) &&
-            Array.from(item.timerConfigs).every((timerConfig): timerConfig is TimerInterval => {
+            "timerIntervals" in item &&
+            Array.isArray(item.timerIntervals) &&
+            Array.from(item.timerIntervals).every((timerInterval): timerInterval is TimerInterval => {
               return (
-                typeof timerConfig === "object" &&
-                timerConfig !== null &&
-                "id" in timerConfig &&
-                typeof timerConfig.id === "string" &&
-                "initialDuration" in timerConfig &&
-                typeof timerConfig.initialDuration === "number" &&
-                "title" in timerConfig &&
-                typeof timerConfig.title === "string"
+                typeof timerInterval === "object" &&
+                timerInterval !== null &&
+                "id" in timerInterval &&
+                typeof timerInterval.id === "string" &&
+                "duration" in timerInterval &&
+                typeof timerInterval.duration === "number" &&
+                "title" in timerInterval &&
+                typeof timerInterval.title === "string"
               );
             }) &&
             "title" in item &&

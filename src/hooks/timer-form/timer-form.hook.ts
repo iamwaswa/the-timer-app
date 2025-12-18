@@ -34,7 +34,7 @@ export function useTimerForm(initialValue?: TimerType) {
       updateNumIterations(updatedNumIterations: number) {
         dispatch({ payload: { updatedNumIterations }, type: "update-num-iterations" });
       },
-      updateTimerConfigs(updatedTimerIntervals: TimerInterval[]) {
+      updateTimerIntervals(updatedTimerIntervals: TimerInterval[]) {
         dispatch({ payload: { updatedTimerIntervals }, type: "update-timer-intervals" });
       },
       updateTitle(updatedTitle: string) {

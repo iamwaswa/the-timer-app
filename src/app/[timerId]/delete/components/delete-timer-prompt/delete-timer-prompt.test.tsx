@@ -26,16 +26,14 @@ it("should render the delete timer prompt with the correct title", () => {
   const timers = [
     {
       id: "1",
-      initialDuration: 60,
       numIterations: 3,
-      timerConfigs: [],
+      timerIntervals: [],
       title: "Timer 1",
     },
     {
       id: "2",
-      initialDuration: 120,
       numIterations: 3,
-      timerConfigs: [],
+      timerIntervals: [],
       title: "Timer 2",
     },
   ];
@@ -49,16 +47,14 @@ it("should have cancel button set up to link to '/'", async () => {
   const timers = [
     {
       id: "1",
-      initialDuration: 60,
       numIterations: 3,
-      timerConfigs: [],
+      timerIntervals: [],
       title: "Timer 1",
     },
     {
       id: "2",
-      initialDuration: 120,
       numIterations: 3,
-      timerConfigs: [],
+      timerIntervals: [],
       title: "Timer 2",
     },
   ];
@@ -74,16 +70,14 @@ it("should remove the timer when delete button is clicked", async () => {
   const timers = [
     {
       id: "1",
-      initialDuration: 60,
       numIterations: 3,
-      timerConfigs: [],
+      timerIntervals: [],
       title: "Timer 1",
     },
     {
       id: "2",
-      initialDuration: 120,
       numIterations: 3,
-      timerConfigs: [],
+      timerIntervals: [],
       title: "Timer 2",
     },
   ];

@@ -7,30 +7,26 @@ import { Timer } from "../timer";
 
 type TimersProps = {
   numIterations: number;
-  timerConfigs: TimerInterval[];
+  timerIntervals: TimerInterval[];
 };
 
-export function Timers({ numIterations, timerConfigs }: TimersProps) {
-  const {
-    nextTimerIntervalIndex: nextTimerConfigIndex,
-    numIterationsLeft,
-    currentTimerIntervalIndex: timerConfigIndex,
-    onResetAll,
-    onTimerFinished,
-  } = useSequentialTimerIntervals(numIterations, timerConfigs);
+export function Timers({ numIterations, timerIntervals }: TimersProps) {
+  const { nextTimerIntervalIndex, numIterationsLeft, currentTimerIntervalIndex, onResetAll, onTimerFinished } =
+    useSequentialTimerIntervals(numIterations, timerIntervals);
 
   return (
     <Timer
-      key={timerConfigs[timerConfigIndex].id}
-      nextTimerConfig={timerConfigs[nextTimerConfigIndex]}
+      key={timerIntervals[currentTimerIntervalIndex].id}
+      nextTimerInterval={timerIntervals[nextTimerIntervalIndex]}
       shouldShowNextTimer={
-        (numIterationsLeft === 1 && timerConfigIndex !== timerConfigs.length - 1) || numIterationsLeft > 1
+        (numIterationsLeft === 1 && currentTimerIntervalIndex !== timerIntervals.length - 1) || numIterationsLeft > 1
       }
       shouldStartPlaying={
-        timerConfigIndex > 0 || (timerConfigIndex === 0 && numIterationsLeft > 0 && numIterationsLeft !== numIterations)
+        currentTimerIntervalIndex > 0 ||
+        (currentTimerIntervalIndex === 0 && numIterationsLeft > 0 && numIterationsLeft !== numIterations)
       }
-      timerConfig={timerConfigs[timerConfigIndex]}
-      onResetAll={timerConfigIndex > 0 ? onResetAll : undefined}
+      timerInterval={timerIntervals[currentTimerIntervalIndex]}
+      onResetAll={currentTimerIntervalIndex > 0 ? onResetAll : undefined}
       onTimerFinished={onTimerFinished}
     />
   );

@@ -34,26 +34,26 @@ beforeEach(() => {
 });
 
 it("should render a list of timers and the add new timer button", () => {
-  const mockTimers = [
+  const timers = [
     {
       id: "1",
-      title: "Timer 1",
       numIterations: 1,
-      timerConfigs: [],
+      timerIntervals: [],
+      title: "Timer 1",
     },
     {
       id: "2",
-      title: "Timer 2",
       numIterations: 2,
-      timerConfigs: [],
+      timerIntervals: [],
+      title: "Timer 2",
     },
   ];
-  useGetTimersContextMock.mockReturnValue(mockTimers);
+  useGetTimersContextMock.mockReturnValue(timers);
   useGetItemHeightMock.mockReturnValue(100);
 
   render(<Timers parentElementId="test-parent" />);
 
-  expect(screen.getAllByTestId("timer-link")).toHaveLength(mockTimers.length);
+  expect(screen.getAllByTestId("timer-link")).toHaveLength(timers.length);
   expect(screen.getByTestId("add-new-timer")).toBeInTheDocument();
 });
 
@@ -68,26 +68,26 @@ it("should render no timers if there are none", () => {
 });
 
 it("should render the client-only component asynchronously", async () => {
-  const mockTimers = [
+  const timers = [
     {
       id: "1",
-      title: "Timer 1",
       numIterations: 1,
-      timerConfigs: [],
+      timerIntervals: [],
+      title: "Timer 1",
     },
     {
       id: "2",
-      title: "Timer 2",
       numIterations: 2,
-      timerConfigs: [],
+      timerIntervals: [],
+      title: "Timer 2",
     },
   ];
-  useGetTimersContextMock.mockReturnValue(mockTimers);
+  useGetTimersContextMock.mockReturnValue(timers);
   useGetItemHeightMock.mockReturnValue(100);
 
   render(<TimersClientOnlyComponent parentElementId="test-parent" />);
 
   // Use findBy queries to wait for the async component to render
-  expect(await screen.findAllByTestId("timer-link")).toHaveLength(mockTimers.length);
+  expect(await screen.findAllByTestId("timer-link")).toHaveLength(timers.length);
   expect(await screen.findByTestId("add-new-timer")).toBeInTheDocument();
 });

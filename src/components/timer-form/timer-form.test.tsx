@@ -35,7 +35,7 @@ it("should render the form with initial values", () => {
     save: vi.fn(),
     updateTitle: vi.fn(),
     updateNumIterations: vi.fn(),
-    updateTimerConfigs: vi.fn(),
+    updateTimerIntervals: vi.fn(),
   };
   useTimerFormMock.mockImplementation(() => [timerForm, timerFormActions]);
 
@@ -60,7 +60,7 @@ it("should call updateTitle when the title is changed", async () => {
       timerForm.title = newTitle;
     }),
     updateNumIterations: vi.fn(),
-    updateTimerConfigs: vi.fn(),
+    updateTimerIntervals: vi.fn(),
   };
   useTimerFormMock.mockImplementation(() => [timerForm, timerFormActions]);
 
@@ -92,7 +92,7 @@ it("should call updateNumIterations when the number of iterations is changed", a
     updateNumIterations: vi.fn().mockImplementation((newNumIterations) => {
       timerForm.numIterations = newNumIterations;
     }),
-    updateTimerConfigs: vi.fn(),
+    updateTimerIntervals: vi.fn(),
   };
   useTimerFormMock.mockImplementation(() => [timerForm, timerFormActions]);
 
@@ -122,7 +122,7 @@ it("should call save and redirect on form submission", async () => {
     save: vi.fn(),
     updateTitle: vi.fn(),
     updateNumIterations: vi.fn(),
-    updateTimerConfigs: vi.fn(),
+    updateTimerIntervals: vi.fn(),
   };
   useTimerFormMock.mockImplementation(() => [timerForm, timerFormActions]);
 
@@ -145,7 +145,7 @@ it('should display "Update Timer" when a timer prop is provided', () => {
     save: vi.fn(),
     updateTitle: vi.fn(),
     updateNumIterations: vi.fn(),
-    updateTimerConfigs: vi.fn(),
+    updateTimerIntervals: vi.fn(),
   };
   useTimerFormMock.mockImplementation(() => [timerForm, timerFormActions]);
 

@@ -3,7 +3,7 @@
 import { Box, Button, TextField } from "@mui/material";
 import { redirect } from "next/navigation";
 
-import { TimerConfigFormFields } from "@/components";
+import { TimerIntervalFormFields } from "@/components";
 import { useTimerForm } from "@/hooks";
 import type { TimerType } from "@/types";
 
@@ -57,9 +57,9 @@ export function TimerForm({ timer }: TimerFormProps) {
           onChange={(event) => timerFormActions.updateNumIterations(Number(event.currentTarget.value))}
           variant="outlined"
         />
-        <TimerConfigFormFields
-          timerConfigs={timerForm.timerIntervals}
-          updateTimerConfigs={timerFormActions.updateTimerConfigs}
+        <TimerIntervalFormFields
+          timerIntervals={timerForm.timerIntervals}
+          updateTimerIntervals={timerFormActions.updateTimerIntervals}
         />
       </Box>
       <Button sx={{ alignSelf: "flex-end" }} type="submit" variant="contained" color="primary">

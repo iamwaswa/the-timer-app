@@ -32,12 +32,12 @@ beforeEach(() => {
 });
 
 it("should render the edit timer form with the correct timer data", () => {
-  const mockTimers = [
-    { id: "1", initialDuration: 60, numIterations: 3, timerConfigs: [], title: "Timer 1" },
-    { id: "2", initialDuration: 120, numIterations: 3, timerConfigs: [], title: "Timer 2" },
+  const timers = [
+    { id: "1", numIterations: 3, timerIntervals: [], title: "Timer 1" },
+    { id: "2", numIterations: 3, timerIntervals: [], title: "Timer 2" },
   ];
-  useParamsMock.mockReturnValue({ timerId: mockTimers[0].id });
-  useGetTimersContextMock.mockReturnValue(mockTimers);
+  useParamsMock.mockReturnValue({ timerId: timers[0].id });
+  useGetTimersContextMock.mockReturnValue(timers);
 
   render(<EditTimerPage />);
 
@@ -46,12 +46,12 @@ it("should render the edit timer form with the correct timer data", () => {
 });
 
 it("should call notFound when the timer does not exist", () => {
-  const mockTimers = [
-    { id: "1", initialDuration: 60, numIterations: 3, timerConfigs: [], title: "Timer 1" },
-    { id: "2", initialDuration: 120, numIterations: 3, timerConfigs: [], title: "Timer 2" },
+  const timers = [
+    { id: "1", numIterations: 3, timerIntervals: [], title: "Timer 1" },
+    { id: "2", numIterations: 3, timerIntervals: [], title: "Timer 2" },
   ];
   useParamsMock.mockReturnValue({ timerId: "3" });
-  useGetTimersContextMock.mockReturnValue(mockTimers);
+  useGetTimersContextMock.mockReturnValue(timers);
 
   expect(notFoundMock).not.toHaveBeenCalled();
 

@@ -81,15 +81,15 @@ it("should update the timer configs", () => {
   useTimersContextSpy.mockImplementation(() => [[], setTimers]);
 
   const { result } = renderHook(() => useTimerForm());
-  const newTimerConfigs: TimerInterval[] = [{ id: "new-config", duration: 30, title: "New Config" }];
+  const newTimerIntervals: TimerInterval[] = [{ id: "new-config", duration: 30, title: "New Config" }];
 
   expect(setTimers).not.toHaveBeenCalled();
 
   act(() => {
-    result.current[1].updateTimerConfigs(newTimerConfigs);
+    result.current[1].updateTimerIntervals(newTimerIntervals);
   });
 
-  expect(result.current[0].timerIntervals).toEqual(newTimerConfigs);
+  expect(result.current[0].timerIntervals).toEqual(newTimerIntervals);
   expect(setTimers).not.toHaveBeenCalled();
 });
 

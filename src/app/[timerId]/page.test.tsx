@@ -35,9 +35,8 @@ it("should render the Timers component when timer is found", () => {
   const timers = [
     {
       id: "1",
-      initialDuration: 60,
       numIterations: 3,
-      timerConfigs: [],
+      timerIntervals: [],
       title: "Timer 1",
     },
   ];
@@ -53,9 +52,8 @@ it("should call notFound when timer is not found", () => {
   const timers = [
     {
       id: "1",
-      initialDuration: 60,
       numIterations: 3,
-      timerConfigs: [],
+      timerIntervals: [],
       title: "Timer 1",
     },
   ];
