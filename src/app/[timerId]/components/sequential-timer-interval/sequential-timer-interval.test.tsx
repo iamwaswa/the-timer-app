@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render } from "@testing-library/react";
 
 import { useTimerInterval } from "@/hooks";
 import { formatDuration, pickTimerColor } from "@/utils";
@@ -6,7 +6,7 @@ import { formatDuration, pickTimerColor } from "@/utils";
 import { TimerActions } from "../timer-actions";
 import { TimerDuration } from "../timer-duration";
 import { TimerTitle } from "../timer-title";
-import { Timer } from "./timer";
+import { SequentialTimerInterval } from "./sequential-timer-interval";
 
 vi.mock("@/hooks", () => ({
   ...vi.importActual("@/hooks"),
@@ -79,17 +79,9 @@ it.each([true, false])(
       title: "Timer 1",
     };
 
-    const nextTimerInterval = {
-      id: "2",
-      duration: 20,
-      title: "Timer 2",
-    };
-
     render(
-      <Timer
-        nextTimerInterval={nextTimerInterval}
+      <SequentialTimerInterval
         shouldStartPlaying={false}
-        shouldShowNextTimer={false}
         timerInterval={timerInterval}
         onResetAll={onResetAll}
         onTimerFinished={onTimerFinished}
@@ -133,17 +125,9 @@ it("should call onTimerFinished when the timer is finished", () => {
     title: "Timer 1",
   };
 
-  const nextTimerInterval = {
-    id: "2",
-    duration: 20,
-    title: "Timer 2",
-  };
-
   render(
-    <Timer
-      nextTimerInterval={nextTimerInterval}
+    <SequentialTimerInterval
       shouldStartPlaying={false}
-      shouldShowNextTimer={false}
       timerInterval={timerInterval}
       onResetAll={onResetAll}
       onTimerFinished={onTimerFinished}
@@ -151,90 +135,6 @@ it("should call onTimerFinished when the timer is finished", () => {
   );
 
   expect(onTimerFinished).toHaveBeenCalled();
-});
-
-it("should show the next timer snackbar when shouldShowNextTimer is true", () => {
-  const useTimerMockResult = {
-    duration: 10,
-    isFinished: true,
-    isPlaying: false,
-    resetOrRestartToggle: false,
-    pause: vi.fn(),
-    play: vi.fn(),
-    reset: vi.fn(),
-    restart: vi.fn(),
-  };
-  useTimerIntervalMock.mockReturnValue(useTimerMockResult);
-  formatDurationMock.mockReturnValue("00:10");
-  pickTimerColorMock.mockReturnValue("red");
-
-  const timerInterval = {
-    id: "1",
-    duration: 10,
-    title: "Timer 1",
-  };
-
-  const nextTimerInterval = {
-    id: "2",
-    duration: 20,
-    title: "Timer 2",
-  };
-
-  render(
-    <Timer
-      nextTimerInterval={nextTimerInterval}
-      shouldStartPlaying={false}
-      shouldShowNextTimer={true}
-      timerInterval={timerInterval}
-      onResetAll={onResetAll}
-      onTimerFinished={onTimerFinished}
-    />,
-  );
-
-  expect(onTimerFinished).toHaveBeenCalledTimes(1);
-
-  expect(screen.getByText("Up next: Timer 2")).toBeInTheDocument();
-});
-
-it("should not show the next timer snackbar when shouldShowNextTimer is false", () => {
-  const useTimerMockResult = {
-    duration: 10,
-    isFinished: false,
-    isPlaying: false,
-    resetOrRestartToggle: false,
-    pause: vi.fn(),
-    play: vi.fn(),
-    reset: vi.fn(),
-    restart: vi.fn(),
-  };
-  useTimerIntervalMock.mockReturnValue(useTimerMockResult);
-  formatDurationMock.mockReturnValue("00:10");
-  pickTimerColorMock.mockReturnValue("red");
-
-  const timerInterval = {
-    id: "1",
-    duration: 10,
-    title: "Timer 1",
-  };
-
-  const nextTimerInterval = {
-    id: "2",
-    duration: 20,
-    title: "Timer 2",
-  };
-
-  render(
-    <Timer
-      nextTimerInterval={nextTimerInterval}
-      shouldStartPlaying={false}
-      shouldShowNextTimer={false}
-      timerInterval={timerInterval}
-      onResetAll={onResetAll}
-      onTimerFinished={onTimerFinished}
-    />,
-  );
-
-  expect(screen.queryByText("Up next: Timer 2")).not.toBeInTheDocument();
 });
 
 it("should pass the correct props to TimerActions", () => {
@@ -259,17 +159,9 @@ it("should pass the correct props to TimerActions", () => {
     title: "Timer 1",
   };
 
-  const nextTimerInterval = {
-    id: "2",
-    duration: 20,
-    title: "Timer 2",
-  };
-
   render(
-    <Timer
-      nextTimerInterval={nextTimerInterval}
+    <SequentialTimerInterval
       shouldStartPlaying={false}
-      shouldShowNextTimer={false}
       timerInterval={timerInterval}
       onResetAll={onResetAll}
       onTimerFinished={onTimerFinished}

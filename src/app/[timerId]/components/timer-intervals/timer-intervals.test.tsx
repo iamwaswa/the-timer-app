@@ -1,9 +1,9 @@
-import { render } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 
 import { useSequentialTimerIntervals } from "@/hooks";
 
-import { Timer } from "../timer";
-import { Timers } from "./timers";
+import { SequentialTimerInterval } from "../sequential-timer-interval";
+import { TimerIntervals } from "./timer-intervals";
 
 vi.mock("@/hooks", () => ({
   ...vi.importActual("@/hooks"),
@@ -12,12 +12,12 @@ vi.mock("@/hooks", () => ({
 
 const useSequentialTimerIntervalsMock = vi.mocked(useSequentialTimerIntervals);
 
-vi.mock("../timer", () => ({
-  ...vi.importActual("../timer"),
-  Timer: vi.fn(() => <div data-testid="timer-mock" />),
+vi.mock("../sequential-timer-interval", () => ({
+  ...vi.importActual("../sequential-timer-interval"),
+  SequentialTimerInterval: vi.fn(() => <div data-testid="sequential-timer-interval" />),
 }));
 
-const TimerMock = vi.mocked(Timer);
+const SequentialTimerIntervalMock = vi.mocked(SequentialTimerInterval);
 
 beforeEach(() => {
   vi.resetAllMocks();
@@ -39,12 +39,10 @@ it("should render as expected", () => {
     onTimerFinished,
   });
 
-  render(<Timers numIterations={2} timerIntervals={timerIntervals} />);
+  render(<TimerIntervals numIterations={2} timerIntervals={timerIntervals} />);
 
-  expect(TimerMock).toHaveBeenCalledWith(
+  expect(SequentialTimerIntervalMock).toHaveBeenCalledWith(
     expect.objectContaining({
-      nextTimerInterval: timerIntervals[1],
-      shouldShowNextTimer: true,
       shouldStartPlaying: false,
       timerInterval: timerIntervals[0],
       onResetAll: undefined,
@@ -70,12 +68,10 @@ it("should set shouldStartPlaying to false when it's the first timer and the fir
     onTimerFinished,
   });
 
-  render(<Timers numIterations={2} timerIntervals={timerIntervals} />);
+  render(<TimerIntervals numIterations={2} timerIntervals={timerIntervals} />);
 
-  expect(TimerMock).toHaveBeenCalledWith(
+  expect(SequentialTimerIntervalMock).toHaveBeenCalledWith(
     expect.objectContaining({
-      nextTimerInterval: timerIntervals[1],
-      shouldShowNextTimer: true,
       shouldStartPlaying: false,
       timerInterval: timerIntervals[0],
       onResetAll: undefined,
@@ -101,12 +97,10 @@ it("should set shouldStartPlaying to true for timers after the first", () => {
     onTimerFinished,
   });
 
-  render(<Timers numIterations={2} timerIntervals={timerIntervals} />);
+  render(<TimerIntervals numIterations={2} timerIntervals={timerIntervals} />);
 
-  expect(TimerMock).toHaveBeenCalledWith(
+  expect(SequentialTimerIntervalMock).toHaveBeenCalledWith(
     expect.objectContaining({
-      nextTimerInterval: timerIntervals[0],
-      shouldShowNextTimer: true,
       shouldStartPlaying: true,
       timerInterval: timerIntervals[1],
       onResetAll,
@@ -132,12 +126,10 @@ it("should set shouldStartPlaying to true for iterations after the first for the
     onTimerFinished,
   });
 
-  render(<Timers numIterations={2} timerIntervals={timerIntervals} />);
+  render(<TimerIntervals numIterations={2} timerIntervals={timerIntervals} />);
 
-  expect(TimerMock).toHaveBeenCalledWith(
+  expect(SequentialTimerIntervalMock).toHaveBeenCalledWith(
     expect.objectContaining({
-      nextTimerInterval: timerIntervals[1],
-      shouldShowNextTimer: true,
       shouldStartPlaying: true,
       timerInterval: timerIntervals[0],
       onResetAll: undefined,
@@ -163,12 +155,10 @@ it("should show the next timer if there are more iterations", () => {
     onTimerFinished,
   });
 
-  render(<Timers numIterations={2} timerIntervals={timerIntervals} />);
+  render(<TimerIntervals numIterations={2} timerIntervals={timerIntervals} />);
 
-  expect(TimerMock).toHaveBeenCalledWith(
+  expect(SequentialTimerIntervalMock).toHaveBeenCalledWith(
     expect.objectContaining({
-      nextTimerInterval: timerIntervals[0],
-      shouldShowNextTimer: true,
       shouldStartPlaying: true,
       timerInterval: timerIntervals[2],
       onResetAll,
@@ -194,12 +184,10 @@ it("should show the next timer if there are more timers in the current iteration
     onTimerFinished,
   });
 
-  render(<Timers numIterations={1} timerIntervals={timerIntervals} />);
+  render(<TimerIntervals numIterations={1} timerIntervals={timerIntervals} />);
 
-  expect(TimerMock).toHaveBeenCalledWith(
+  expect(SequentialTimerIntervalMock).toHaveBeenCalledWith(
     expect.objectContaining({
-      nextTimerInterval: timerIntervals[1],
-      shouldShowNextTimer: true,
       shouldStartPlaying: false,
       timerInterval: timerIntervals[0],
       onResetAll: undefined,
@@ -225,12 +213,10 @@ it("should not show the next timer if it is the last timer of the last iteration
     onTimerFinished,
   });
 
-  render(<Timers numIterations={1} timerIntervals={timerIntervals} />);
+  render(<TimerIntervals numIterations={1} timerIntervals={timerIntervals} />);
 
-  expect(TimerMock).toHaveBeenCalledWith(
+  expect(SequentialTimerIntervalMock).toHaveBeenCalledWith(
     expect.objectContaining({
-      nextTimerInterval: timerIntervals[0],
-      shouldShowNextTimer: false,
       shouldStartPlaying: true,
       timerInterval: timerIntervals[2],
       onResetAll,
@@ -256,12 +242,10 @@ it("should set reset all action when timerIntervalIndex > 0", () => {
     onTimerFinished,
   });
 
-  render(<Timers numIterations={1} timerIntervals={timerIntervals} />);
+  render(<TimerIntervals numIterations={1} timerIntervals={timerIntervals} />);
 
-  expect(TimerMock).toHaveBeenCalledWith(
+  expect(SequentialTimerIntervalMock).toHaveBeenCalledWith(
     expect.objectContaining({
-      nextTimerInterval: timerIntervals[2],
-      shouldShowNextTimer: true,
       shouldStartPlaying: true,
       timerInterval: timerIntervals[1],
       onResetAll,
@@ -287,12 +271,10 @@ it("should not set reset all action when timerIntervalIndex is 0", () => {
     onTimerFinished,
   });
 
-  render(<Timers numIterations={1} timerIntervals={timerIntervals} />);
+  render(<TimerIntervals numIterations={1} timerIntervals={timerIntervals} />);
 
-  expect(TimerMock).toHaveBeenCalledWith(
+  expect(SequentialTimerIntervalMock).toHaveBeenCalledWith(
     expect.objectContaining({
-      nextTimerInterval: timerIntervals[1],
-      shouldShowNextTimer: true,
       shouldStartPlaying: false,
       timerInterval: timerIntervals[0],
       onTimerFinished,
@@ -300,4 +282,67 @@ it("should not set reset all action when timerIntervalIndex is 0", () => {
     }),
     undefined,
   );
+});
+
+it("should show the next timer snackbar when one iteration is left and this is not the last timer interval", () => {
+  const timerIntervals = [
+    { id: "1", duration: 10, title: "Timer 1" },
+    { id: "2", duration: 20, title: "Timer 2" },
+    { id: "3", duration: 30, title: "Timer 3" },
+  ];
+  const onResetAll = vi.fn();
+  const onTimerFinished = vi.fn();
+  useSequentialTimerIntervalsMock.mockReturnValue({
+    nextTimerIntervalIndex: 1,
+    numIterationsLeft: 1,
+    currentTimerIntervalIndex: 0,
+    onResetAll,
+    onTimerFinished,
+  });
+
+  render(<TimerIntervals numIterations={1} timerIntervals={timerIntervals} />);
+
+  expect(screen.getByText("Up next: Timer 2")).toBeInTheDocument();
+});
+
+it("should show the next timer snackbar when one iteration is left and this is not the last timer interval", () => {
+  const timerIntervals = [
+    { id: "1", duration: 10, title: "Timer 1" },
+    { id: "2", duration: 20, title: "Timer 2" },
+    { id: "3", duration: 30, title: "Timer 3" },
+  ];
+  const onResetAll = vi.fn();
+  const onTimerFinished = vi.fn();
+  useSequentialTimerIntervalsMock.mockReturnValue({
+    nextTimerIntervalIndex: 1,
+    numIterationsLeft: 1,
+    currentTimerIntervalIndex: 0,
+    onResetAll,
+    onTimerFinished,
+  });
+
+  render(<TimerIntervals numIterations={1} timerIntervals={timerIntervals} />);
+
+  expect(screen.getByText("Up next: Timer 2")).toBeInTheDocument();
+});
+
+it("should show the next timer snackbar when more than one iteration is left", () => {
+  const timerIntervals = [
+    { id: "1", duration: 10, title: "Timer 1" },
+    { id: "2", duration: 20, title: "Timer 2" },
+    { id: "3", duration: 30, title: "Timer 3" },
+  ];
+  const onResetAll = vi.fn();
+  const onTimerFinished = vi.fn();
+  useSequentialTimerIntervalsMock.mockReturnValue({
+    nextTimerIntervalIndex: 1,
+    numIterationsLeft: 2,
+    currentTimerIntervalIndex: 0,
+    onResetAll,
+    onTimerFinished,
+  });
+
+  render(<TimerIntervals numIterations={1} timerIntervals={timerIntervals} />);
+
+  expect(screen.getByText("Up next: Timer 2")).toBeInTheDocument();
 });

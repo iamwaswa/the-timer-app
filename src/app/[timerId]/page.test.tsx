@@ -24,7 +24,7 @@ const useGetTimersContextMock = vi.mocked(useGetTimersContext);
 
 vi.mock("./components", () => ({
   ...vi.importActual("./components"),
-  Timers: vi.fn(() => <div data-testid="timers" />),
+  TimerIntervals: vi.fn(() => <div data-testid="timers" />),
 }));
 
 beforeEach(() => {

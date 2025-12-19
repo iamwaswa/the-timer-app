@@ -4,7 +4,7 @@ import { notFound, useParams } from "next/navigation";
 
 import { useGetTimersContext } from "@/context";
 
-import { Timers } from "./components";
+import { TimerIntervals } from "./components";
 
 type TimerPageParams = {
   timerId: string;
@@ -19,5 +19,5 @@ export default function TimerPage() {
     return notFound();
   }
 
-  return <Timers numIterations={timer.numIterations} timerIntervals={timer.timerIntervals} />;
+  return <TimerIntervals numIterations={timer.numIterations} timerIntervals={timer.timerIntervals} />;
 }
