@@ -64,39 +64,46 @@ it("should not play beep if duration is greater than 10", () => {
   expect(mockStart).not.toHaveBeenCalled();
 });
 
-it.each([2, 3, 4, 5, 6, 7, 8, 9, 10])("should play a 440Hz beep for 700ms when duration is %s", (currentDuration) => {
-  Object.defineProperty(window, "AudioContext", {
-    value: MockAudioContext,
-    configurable: true,
-    writable: true,
-  });
+it.each([2, 3, 4, 5, 6, 7, 8, 9, 10])(
+  "should play a 440Hz beep for 700ms when duration is %s",
+  async (currentDuration) => {
+    Object.defineProperty(window, "AudioContext", {
+      value: MockAudioContext,
+      configurable: true,
+      writable: true,
+    });
 
-  const spyCreateOscillator = vi.spyOn(MockAudioContext.prototype, "createOscillator");
+    const spyCreateOscillator = vi.spyOn(MockAudioContext.prototype, "createOscillator");
 
-  renderHook(() => usePlayCountdownBeep(currentDuration, true));
+    renderHook(() => usePlayCountdownBeep(currentDuration, true));
 
-  expect(mockStart).toHaveBeenCalledTimes(1);
-  expect(mockConnect).toHaveBeenCalledTimes(1);
+    // wait for cleanupBeep to finish
+    await Promise.resolve();
 
-  expect(spyCreateOscillator.mock.results[0].value.type).toBe("sine");
-  expect(spyCreateOscillator.mock.results[0].value.frequency.value).toBe(440);
+    expect(mockStart).toHaveBeenCalledTimes(1);
+    expect(mockConnect).toHaveBeenCalledTimes(1);
 
-  expect(mockStop).not.toHaveBeenCalled();
-  expect(mockClose).not.toHaveBeenCalled();
+    expect(spyCreateOscillator).toHaveBeenCalledTimes(1);
+    expect(spyCreateOscillator.mock.results[0].value.type).toBe("sine");
+    expect(spyCreateOscillator.mock.results[0].value.frequency.value).toBe(440);
 
-  const durationDecreaseLessThan700ms = 699;
-  vi.advanceTimersByTime(durationDecreaseLessThan700ms);
+    expect(mockStop).not.toHaveBeenCalled();
+    expect(mockClose).not.toHaveBeenCalled();
 
-  expect(mockStop).not.toHaveBeenCalled();
-  expect(mockClose).not.toHaveBeenCalled();
+    const durationDecreaseLessThan700ms = 699;
+    vi.advanceTimersByTime(durationDecreaseLessThan700ms);
 
-  vi.advanceTimersByTime(700 - durationDecreaseLessThan700ms);
+    expect(mockStop).not.toHaveBeenCalled();
+    expect(mockClose).not.toHaveBeenCalled();
 
-  expect(mockStop).toHaveBeenCalledTimes(1);
-  expect(mockClose).toHaveBeenCalledTimes(1);
-});
+    vi.advanceTimersByTime(700 - durationDecreaseLessThan700ms);
 
-it("should play a 880Hz beep for 1000ms when duration is 1", () => {
+    expect(mockStop).toHaveBeenCalledTimes(1);
+    expect(mockClose).toHaveBeenCalledTimes(1);
+  },
+);
+
+it("should play a 880Hz beep for 1000ms when duration is 1", async () => {
   Object.defineProperty(window, "AudioContext", {
     value: MockAudioContext,
     configurable: true,
@@ -106,6 +113,9 @@ it("should play a 880Hz beep for 1000ms when duration is 1", () => {
   const spyCreateOscillator = vi.spyOn(MockAudioContext.prototype, "createOscillator");
 
   renderHook(() => usePlayCountdownBeep(1, true));
+
+  // wait for cleanupBeep to finish
+  await Promise.resolve();
 
   expect(mockStart).toHaveBeenCalledTimes(1);
   expect(mockConnect).toHaveBeenCalledTimes(1);

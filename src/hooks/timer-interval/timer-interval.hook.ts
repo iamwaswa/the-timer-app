@@ -37,7 +37,7 @@ export function useTimerInterval(timerInterval: TimerInterval, shouldStartPlayin
   }, [isPlaying, toggleRestartInterval]);
 
   useEffect(() => {
-    if (duration <= 1) {
+    if (duration === 0) {
       clearIntervalIfPresent();
     }
   }, [duration]);
