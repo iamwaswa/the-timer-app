@@ -33,7 +33,7 @@ export function SequentialTimerIntervals({ numIterations, timerIntervals }: Sequ
             transition: (props) => <Slide {...props} direction="left" />,
           }}
         >
-          <Alert variant="filled" severity="info">
+          <Alert variant="standard" severity="info">
             <Typography>Up next: {nextTimerInterval.title}</Typography>
           </Alert>
         </Snackbar>
