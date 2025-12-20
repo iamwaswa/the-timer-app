@@ -4,88 +4,109 @@ import { useReducer } from "react";
 
 import type { TimerInterval } from "@/types";
 
-export function useSequentialTimerIntervals(initialNumIterationsLeft: number, timerIntervals: TimerInterval[]) {
-  const initialCurrentTimerIntervalIndex = 0;
-  const [{ currentTimerIntervalIndex, nextTimerIntervalIndex, numIterationsLeft }, dispatch] = useReducer(
-    sequentialTimerIntervalsReducer,
-    {
-      currentTimerIntervalIndex: initialCurrentTimerIntervalIndex,
-      nextTimerIntervalIndex: getNextTimerIntervalIndexFromCurrent(
-        initialCurrentTimerIntervalIndex,
-        timerIntervals.length,
-      ),
-      numIterationsLeft: initialNumIterationsLeft,
-    },
-  );
+export function useSequentialTimerIntervals(numIterations: number, timerIntervals: TimerInterval[]) {
+  const [timerIntervalIdToEntityMap, timerIntervalRefTree] = createTimerIntervalRef(numIterations, timerIntervals);
+
+  const [{ firstRef, currentRef, nextRef }, dispatch] = useReducer(sequentialTimerIntervalsReducer, {
+    firstRef: timerIntervalRefTree,
+    currentRef: timerIntervalRefTree,
+    nextRef: timerIntervalRefTree?.next ?? null,
+  });
+
+  const isLastTimerInterval = nextRef === null && currentRef.id === firstRef.id;
 
   return {
-    currentTimerIntervalIndex,
-    nextTimerIntervalIndex,
-    numIterationsLeft,
-    onResetAll() {
-      dispatch({
-        type: "reset-all",
-        payload: { initialNumIterations: initialNumIterationsLeft, numTimerIntervals: timerIntervals.length },
-      });
+    currentTimerInterval: timerIntervalIdToEntityMap.get(currentRef.id)!,
+    firstTimerInterval: timerIntervalIdToEntityMap.get(firstRef.id)!,
+    nextTimerInterval: nextRef?.id ? timerIntervalIdToEntityMap.get(nextRef.id)! : null,
+    onAdvanceSequence() {
+      if (!isLastTimerInterval) {
+        dispatch({ type: "advance-sequence" });
+      }
+      return nextRef?.id ? timerIntervalIdToEntityMap.get(nextRef.id)! : null;
     },
-    onTimerFinished() {
-      dispatch({
-        type: "timer-finished",
-        payload: { numTimerIntervals: timerIntervals.length },
-      });
+    onResetSequence() {
+      dispatch({ type: "reset-sequence" });
+      return timerIntervalIdToEntityMap.get(firstRef.id)!;
     },
   };
 }
 
-type SequentialTimerIntervalsReducerState = {
-  currentTimerIntervalIndex: number;
-  nextTimerIntervalIndex: number;
-  numIterationsLeft: number;
+type TimerIntervalRef = {
+  id: string;
+  next: TimerIntervalRef | null;
 };
 
-type SequentialTimerIntervalsReducerAction =
-  | { payload: { initialNumIterations: number; numTimerIntervals: number }; type: "reset-all" }
-  | { payload: { numTimerIntervals: number }; type: "timer-finished" };
+function createTimerIntervalRef(
+  numIterations: number,
+  timerIntervals: TimerInterval[],
+): [Map<string, TimerInterval>, TimerIntervalRef] {
+  if (numIterations === 0) {
+    throw new Error("Number of iterations must be at least 1");
+  }
+
+  if (timerIntervals.length === 0) {
+    throw new Error("Timer intervals array cannot be empty");
+  }
+
+  const map = new Map<string, TimerInterval>();
+  let firstRef: TimerIntervalRef = { id: "", next: null };
+  let previousRef: TimerIntervalRef = { id: "", next: null };
+
+  let currentIteration = 1;
+  do {
+    for (let index = 0; index < timerIntervals.length; index++) {
+      const timerInterval = timerIntervals[index];
+
+      if (currentIteration === 1 && index === 0) {
+        map.set(timerInterval.id, timerInterval);
+        firstRef = {
+          id: timerInterval.id,
+          next: null,
+        };
+        previousRef = firstRef;
+        continue;
+      }
+
+      const currentRef: TimerIntervalRef = {
+        id: timerInterval.id,
+        next: null,
+      };
+      map.set(currentRef.id, timerInterval);
+      previousRef.next = currentRef;
+      previousRef = currentRef;
+    }
+
+    currentIteration++;
+  } while (currentIteration <= numIterations);
+
+  return [map, firstRef];
+}
+
+type SequentialTimerIntervalsReducerState = {
+  firstRef: TimerIntervalRef;
+  currentRef: TimerIntervalRef;
+  nextRef: TimerIntervalRef | null;
+};
+
+type SequentialTimerIntervalsReducerAction = { type: "reset-sequence" } | { type: "advance-sequence" };
 
 function sequentialTimerIntervalsReducer(
   state: SequentialTimerIntervalsReducerState,
   action: SequentialTimerIntervalsReducerAction,
 ) {
   switch (action.type) {
-    case "reset-all":
-      if (action.payload.numTimerIntervals > 0) {
-        const currentTimerIntervalIndex = 0;
-        return {
-          ...state,
-          numIterationsLeft: action.payload.initialNumIterations,
-          currentTimerIntervalIndex,
-          nextTimerIntervalIndex: getNextTimerIntervalIndexFromCurrent(
-            currentTimerIntervalIndex,
-            action.payload.numTimerIntervals,
-          ),
-        };
-      }
-      return state;
-    case "timer-finished":
-      if (state.numIterationsLeft > 0 && action.payload.numTimerIntervals > 0) {
-        const currentTimerIntervalIndex = (state.currentTimerIntervalIndex + 1) % action.payload.numTimerIntervals;
-        return {
-          ...state,
-          currentTimerIntervalIndex,
-          nextTimerIntervalIndex: getNextTimerIntervalIndexFromCurrent(
-            currentTimerIntervalIndex,
-            action.payload.numTimerIntervals,
-          ),
-          numIterationsLeft:
-            state.currentTimerIntervalIndex === action.payload.numTimerIntervals - 1
-              ? state.numIterationsLeft - 1
-              : state.numIterationsLeft,
-        };
-      }
-      return state;
+    case "advance-sequence":
+      return {
+        ...state,
+        currentRef: state.nextRef ?? state.firstRef,
+        nextRef: state.nextRef?.next ?? null,
+      };
+    case "reset-sequence":
+      return {
+        ...state,
+        currentRef: state.firstRef,
+        nextRef: state.firstRef?.next ?? null,
+      };
   }
-}
-
-function getNextTimerIntervalIndexFromCurrent(currentTimerIntervalIndex: number, numTimerIntervals: number) {
-  return numTimerIntervals > 0 ? (currentTimerIntervalIndex + 1) % numTimerIntervals : 0;
 }

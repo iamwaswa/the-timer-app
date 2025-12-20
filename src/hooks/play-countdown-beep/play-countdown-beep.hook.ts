@@ -34,7 +34,7 @@ export function usePlayCountdownBeep(currentDuration: number, isPlaying: boolean
   useEffect(() => {
     if (isPlaying && currentDuration <= 10 && currentDuration > 1) {
       playBeep(440, 700);
-    } else if (isPlaying && currentDuration <= 1 && currentDuration > 0) {
+    } else if (isPlaying && currentDuration === 1) {
       playBeep(880, 1000);
     }
   }, [currentDuration, isPlaying]);

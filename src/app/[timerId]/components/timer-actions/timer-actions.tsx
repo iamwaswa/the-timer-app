@@ -10,7 +10,7 @@ type TimerActionsProps = {
   pause(): void;
   play(): void;
   reset(): void;
-  resetAll: (() => void) | undefined;
+  resetAll(): void;
   restart(): void;
 };
 
@@ -31,18 +31,23 @@ export function TimerActions({ backgroundColor, isPlaying, pause, play, reset, r
         <Button sx={{ borderColor: color, color }} variant="outlined" onClick={reset}>
           Reset
         </Button>
-        <Button sx={{ borderColor: color, color }} variant="outlined" onClick={isPlaying ? pause : play}>
-          Play / Pause
-        </Button>
+        {!isPlaying && (
+          <Button sx={{ borderColor: color, color }} variant="outlined" onClick={play}>
+            Play
+          </Button>
+        )}
+        {isPlaying && (
+          <Button sx={{ borderColor: color, color }} variant="outlined" onClick={pause}>
+            Pause
+          </Button>
+        )}
         <Button sx={{ borderColor: color, color }} variant="outlined" onClick={restart}>
           Restart
         </Button>
       </Box>
-      {resetAll && (
-        <Button sx={{ borderColor: color, color }} variant="outlined" onClick={resetAll}>
-          Reset All
-        </Button>
-      )}
+      <Button sx={{ borderColor: color, color }} variant="outlined" onClick={resetAll}>
+        Reset All
+      </Button>
     </Box>
   );
 }

@@ -1,183 +1,63 @@
-import { render } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
+import { userEvent } from "@testing-library/user-event";
 
-import { useTimerInterval } from "@/hooks";
-import { formatDuration, pickTimerColor } from "@/utils";
+import type { TimerInterval } from "@/types";
 
-import { TimerActions } from "../timer-actions";
-import { TimerDuration } from "../timer-duration";
-import { TimerTitle } from "../timer-title";
 import { SequentialTimerInterval } from "./sequential-timer-interval";
 
-vi.mock("@/hooks", () => ({
-  ...vi.importActual("@/hooks"),
-  useTimerInterval: vi.fn(),
-  usePlayCountdownBeep: vi.fn(),
-}));
-
-const useTimerIntervalMock = vi.mocked(useTimerInterval);
-
-vi.mock("@/utils", () => ({
-  ...vi.importActual("@/utils"),
-  formatDuration: vi.fn(),
-  pickTimerColor: vi.fn(),
-}));
-
-const formatDurationMock = vi.mocked(formatDuration);
-
-const pickTimerColorMock = vi.mocked(pickTimerColor);
-
-vi.mock("../timer-actions", () => ({
-  ...vi.importActual("../timer-actions"),
-  TimerActions: vi.fn(),
-}));
-
-const TimerActionsMock = vi.mocked(TimerActions);
-
-vi.mock("../timer-duration", () => ({
-  ...vi.importActual("../timer-duration"),
-  TimerDuration: vi.fn(),
-}));
-
-const TimerDurationMock = vi.mocked(TimerDuration);
-
-vi.mock("../timer-title", () => ({
-  ...vi.importActual("../timer-title"),
-  TimerTitle: vi.fn(),
-}));
-
-const TimerTitleMock = vi.mocked(TimerTitle);
-
-const onTimerFinished = vi.fn();
-
-const onResetAll = vi.fn();
-
-beforeEach(() => {
-  vi.resetAllMocks();
-});
-
-it.each([true, false])(
-  "should render the timer with the correct title and duration when isPlaying = %s",
-  (isPlaying) => {
-    const useTimerMockResult = {
-      duration: 10,
-      isFinished: false,
-      isPlaying,
-      resetOrRestartToggle: false,
-      pause: vi.fn(),
-      play: vi.fn(),
-      reset: vi.fn(),
-      restart: vi.fn(),
-    };
-    useTimerIntervalMock.mockReturnValue(useTimerMockResult);
-    formatDurationMock.mockReturnValue("00:10");
-    const backgroundColor = "red";
-    pickTimerColorMock.mockReturnValue(backgroundColor);
-
-    const timerInterval = {
-      id: "1",
-      duration: 10,
-      title: "Timer 1",
-    };
-
-    render(
-      <SequentialTimerInterval
-        shouldStartPlaying={false}
-        timerInterval={timerInterval}
-        onResetAll={onResetAll}
-        onTimerFinished={onTimerFinished}
-      />,
-    );
-
-    expect(TimerTitleMock).toHaveBeenCalledWith(
-      expect.objectContaining({
-        backgroundColor,
-        children: "Timer 1",
-      }),
-      undefined,
-    );
-    expect(TimerDurationMock).toHaveBeenCalledWith(
-      expect.objectContaining({
-        children: "00:10",
-      }),
-      undefined,
-    );
-  },
-);
-
-it("should call onTimerFinished when the timer is finished", () => {
-  const useTimerMockResult = {
-    duration: 10,
-    isFinished: true,
-    isPlaying: false,
-    resetOrRestartToggle: false,
-    pause: vi.fn(),
-    play: vi.fn(),
-    reset: vi.fn(),
-    restart: vi.fn(),
-  };
-  useTimerIntervalMock.mockReturnValue(useTimerMockResult);
-  formatDurationMock.mockReturnValue("00:10");
-  pickTimerColorMock.mockReturnValue("red");
-
-  const timerInterval = {
+it("should render the sequential timer interval with the correct title and duration", () => {
+  const timerInterval: TimerInterval = {
     id: "1",
+    title: "Test Interval",
     duration: 10,
-    title: "Timer 1",
   };
+  const onFinished = vi.fn();
+  const onResetAll = vi.fn().mockReturnValue(timerInterval);
 
   render(
     <SequentialTimerInterval
-      shouldStartPlaying={false}
       timerInterval={timerInterval}
-      onResetAll={onResetAll}
-      onTimerFinished={onTimerFinished}
+      onAdvanceSequence={onFinished}
+      onResetSequence={onResetAll}
     />,
   );
 
-  expect(onTimerFinished).toHaveBeenCalled();
+  expect(screen.getByRole("heading", { level: 1, name: "00:00:10" })).toBeInTheDocument();
+  expect(screen.getByRole("heading", { level: 2, name: timerInterval.title })).toBeInTheDocument();
+  expect(screen.getByRole("button", { name: "Reset" })).toBeInTheDocument();
+  expect(screen.getByRole("button", { name: "Play" })).toBeInTheDocument();
+  expect(screen.getByRole("button", { name: "Restart" })).toBeInTheDocument();
+  expect(screen.getByRole("button", { name: "Reset All" })).toBeInTheDocument();
 });
 
-it("should pass the correct props to TimerActions", () => {
-  const useTimerMockResult = {
-    duration: 10,
-    isFinished: false,
-    isPlaying: false,
-    resetOrRestartToggle: false,
-    pause: vi.fn(),
-    play: vi.fn(),
-    reset: vi.fn(),
-    restart: vi.fn(),
-  };
-  useTimerIntervalMock.mockReturnValue(useTimerMockResult);
-  formatDurationMock.mockReturnValue("00:10");
-  const backgroundColor = "red";
-  pickTimerColorMock.mockReturnValue(backgroundColor);
-
-  const timerInterval = {
+it("should render the sequential timer interval as expected when played and paused", async () => {
+  const event = userEvent.setup();
+  const timerInterval: TimerInterval = {
     id: "1",
-    duration: 10,
-    title: "Timer 1",
+    title: "Test Interval",
+    duration: 20,
   };
+  const onFinished = vi.fn();
+  const onResetAll = vi.fn();
 
   render(
     <SequentialTimerInterval
-      shouldStartPlaying={false}
       timerInterval={timerInterval}
-      onResetAll={onResetAll}
-      onTimerFinished={onTimerFinished}
+      onAdvanceSequence={onFinished}
+      onResetSequence={onResetAll}
     />,
   );
 
-  expect(TimerActionsMock).toHaveBeenCalledWith(
-    expect.objectContaining({
-      backgroundColor,
-      isPlaying: useTimerMockResult.isPlaying,
-      pause: useTimerMockResult.pause,
-      play: useTimerMockResult.play,
-      reset: useTimerMockResult.reset,
-      restart: useTimerMockResult.restart,
-      resetAll: onResetAll,
-    }),
-    undefined,
-  );
+  expect(screen.getByRole("button", { name: "Play" })).toBeInTheDocument();
+  expect(screen.queryByRole("button", { name: "Pause" })).not.toBeInTheDocument();
+
+  await event.click(screen.getByRole("button", { name: "Play" }));
+
+  expect(screen.getByRole("button", { name: "Pause" })).toBeInTheDocument();
+  expect(screen.queryByRole("button", { name: "Play" })).not.toBeInTheDocument();
+
+  await event.click(screen.getByRole("button", { name: "Pause" }));
+
+  expect(screen.getByRole("button", { name: "Play" })).toBeInTheDocument();
+  expect(screen.queryByRole("button", { name: "Pause" })).not.toBeInTheDocument();
 });

@@ -1,51 +1,43 @@
 "use client";
 
 import { Box } from "@mui/material";
-import { useEffect } from "react";
+import type { Property } from "csstype";
+import { useState } from "react";
 
-import { usePlayCountdownBeep, useTimerInterval } from "@/hooks";
+import { usePlayCountdownBeep, useSequentialTimerInterval } from "@/hooks";
 import type { TimerInterval } from "@/types";
-import { formatDuration, pickTimerColor } from "@/utils";
+import { formatDuration, pickTimerIntervalBackgroundColor } from "@/utils";
 
 import { TimerActions } from "../timer-actions";
 import { TimerDuration } from "../timer-duration";
 import { TimerTitle } from "../timer-title";
 
 type SequentualTimerIntervalProps = {
-  shouldStartPlaying: boolean;
   timerInterval: TimerInterval;
-  onResetAll: (() => void) | undefined;
-  onTimerFinished(): void;
+  onAdvanceSequence(): TimerInterval | null;
+  onResetSequence(): TimerInterval;
 };
 
 export function SequentialTimerInterval({
-  shouldStartPlaying,
   timerInterval,
-  onResetAll,
-  onTimerFinished,
+  onAdvanceSequence,
+  onResetSequence,
 }: SequentualTimerIntervalProps) {
-  const { duration, isFinished, isPlaying, resetOrRestartToggle, pause, play, reset, restart } = useTimerInterval(
+  const [timerIntervalBackgroundColor] = useState<Property.BackgroundColor>(pickTimerIntervalBackgroundColor);
+
+  const { animationToggle, duration, status, pause, play, reset, resetAll, restart } = useSequentialTimerInterval(
     timerInterval,
-    shouldStartPlaying,
+    onAdvanceSequence,
+    onResetSequence,
   );
 
-  usePlayCountdownBeep(duration, isPlaying);
-
-  useEffect(() => {
-    if (isFinished) {
-      onTimerFinished();
-    } else {
-      return;
-    }
-  }, [isFinished, onTimerFinished]);
-
-  const backgroundColor = pickTimerColor();
+  usePlayCountdownBeep(duration, status === "playing");
 
   return (
     <Box
       sx={{
         alignItems: "center",
-        backgroundColor,
+        backgroundColor: timerIntervalBackgroundColor,
         boxShadow: `inset 0 0 0 9999px rgba(0, 0, 0, 0.3)`,
         display: "flex",
         flexDirection: "column",
@@ -56,15 +48,14 @@ export function SequentialTimerInterval({
       }}
     >
       <Box
-        key={String(resetOrRestartToggle)}
+        key={`${timerInterval.id}-${animationToggle}`}
         sx={{
-          "@keyframes timer-move": {
-            "0%": { transform: "translateX(-100%)" },
-            "100%": { transform: "translateX(0%)" },
+          "@keyframes shift-left-to-right": {
+            to: { transform: "translateX(0%)" },
           },
-          animation: `timer-move ${timerInterval.duration}s linear forwards`,
-          animationPlayState: isPlaying ? "running" : "paused",
-          backgroundColor,
+          animation: `shift-left-to-right ${timerInterval.duration}s linear forwards`,
+          animationPlayState: status === "playing" ? "running" : "paused",
+          backgroundColor: timerIntervalBackgroundColor,
           height: "100%",
           left: 0,
           opacity: 0.25,
@@ -91,16 +82,16 @@ export function SequentialTimerInterval({
             flexDirection: "column",
           }}
         >
-          <TimerDuration backgroundColor={backgroundColor}>{formatDuration(duration)}</TimerDuration>
-          <TimerTitle backgroundColor={backgroundColor}>{timerInterval.title}</TimerTitle>
+          <TimerDuration backgroundColor={timerIntervalBackgroundColor}>{formatDuration(duration)}</TimerDuration>
+          <TimerTitle backgroundColor={timerIntervalBackgroundColor}>{timerInterval.title}</TimerTitle>
         </Box>
         <TimerActions
-          backgroundColor={backgroundColor}
-          isPlaying={isPlaying}
+          backgroundColor={timerIntervalBackgroundColor}
+          isPlaying={status === "playing"}
           pause={pause}
           play={play}
           reset={reset}
-          resetAll={onResetAll}
+          resetAll={resetAll}
           restart={restart}
         />
       </Box>

@@ -1,177 +1,250 @@
-import { renderHook } from "@testing-library/react";
-import { act } from "react";
+import { act, renderHook } from "@testing-library/react";
+
+import type { TimerInterval } from "@/types";
 
 import { useSequentialTimerIntervals } from "./sequential-timer-intervals.hook";
 
-it("should initialize with the correct values", () => {
-  const numIterations = 3;
-  const { result } = renderHook(() =>
-    useSequentialTimerIntervals(numIterations, [
-      {
-        id: "1",
-        duration: 1000,
-        title: "Timer 1",
-      },
-      {
-        id: "2",
-        duration: 2000,
-        title: "Timer 2",
-      },
-    ]),
-  );
-
-  expect(result.current.currentTimerIntervalIndex).toBe(0);
-  expect(result.current.nextTimerIntervalIndex).toBe(1);
-  expect(result.current.numIterationsLeft).toBe(numIterations);
-});
-
-it("should advance to the next timer when onTimerFinished is called", () => {
-  const numIterations = 3;
-  const { result } = renderHook(() =>
-    useSequentialTimerIntervals(numIterations, [
-      {
-        id: "1",
-        duration: 1000,
-        title: "Timer 1",
-      },
-      {
-        id: "2",
-        duration: 2000,
-        title: "Timer 2",
-      },
-    ]),
-  );
-
-  act(() => {
-    result.current.onTimerFinished();
-  });
-
-  expect(result.current.currentTimerIntervalIndex).toBe(1);
-  expect(result.current.nextTimerIntervalIndex).toBe(0);
-  expect(result.current.numIterationsLeft).toBe(numIterations);
-});
-
-it("should decrement iterations when a cycle is completed", () => {
-  const numIterations = 3;
-  const { result } = renderHook(() =>
-    useSequentialTimerIntervals(numIterations, [
-      {
-        id: "1",
-        duration: 1000,
-        title: "Timer 1",
-      },
-      {
-        id: "2",
-        duration: 2000,
-        title: "Timer 2",
-      },
-    ]),
-  );
-
-  act(() => {
-    result.current.onTimerFinished();
-  });
-
-  act(() => {
-    result.current.onTimerFinished();
-  });
-
-  expect(result.current.currentTimerIntervalIndex).toBe(0);
-  expect(result.current.nextTimerIntervalIndex).toBe(1);
-  expect(result.current.numIterationsLeft).toBe(numIterations - 1);
-});
-
-it("should not change index or iterations when no iterations are left", () => {
-  const { result } = renderHook(() =>
-    useSequentialTimerIntervals(1, [
-      {
-        id: "1",
-        duration: 1000,
-        title: "Timer 1",
-      },
-      {
-        id: "2",
-        duration: 2000,
-        title: "Timer 2",
-      },
-    ]),
-  );
-
-  act(() => {
-    result.current.onTimerFinished();
-  });
-
-  act(() => {
-    result.current.onTimerFinished();
-  });
-
-  expect(result.current.currentTimerIntervalIndex).toBe(0);
-  expect(result.current.numIterationsLeft).toBe(0);
-
-  act(() => {
-    result.current.onTimerFinished();
-  });
-
-  expect(result.current.currentTimerIntervalIndex).toBe(0);
-  expect(result.current.numIterationsLeft).toBe(0);
-});
-
 it.each([
-  [
-    [
-      {
-        id: "1",
-        duration: 1000,
-        title: "Timer 1",
-      },
-      {
-        id: "2",
-        duration: 2000,
-        title: "Timer 2",
-      },
-    ],
-  ],
-  [
-    [
-      {
-        id: "1",
-        duration: 1000,
-        title: "Timer 1",
-      },
-    ],
-  ],
-  [[]],
-])("should reset all values when timer intervals = %o and onResetAll is called", (timerIntervals) => {
-  const numIterations = 3;
+  [0, 0],
+  [1, 0],
+  [2, 0],
+  [3, 0],
+  [0, 1],
+  [1, 1],
+  [2, 1],
+  [3, 1],
+  [0, 2],
+  [1, 2],
+  [2, 2],
+  [3, 2],
+  [0, 3],
+  [1, 3],
+  [2, 3],
+  [3, 3],
+])("should initialize with %s timer interval(s) and %s iteration(s)", (numTimerIntervals, numIterations) => {
+  const timerIntervals: TimerInterval[] = Array.from({ length: numTimerIntervals }, (_, index) => ({
+    id: (index + 1).toString(),
+    duration: 10,
+    title: `Timer Interval ${index + 1}`,
+  }));
+
+  if (numIterations === 0) {
+    try {
+      renderHook(() => useSequentialTimerIntervals(numIterations, timerIntervals));
+    } catch (error) {
+      expect(error).toBeInstanceOf(Error);
+      expect((error as Error).message).toBe("Number of iterations must be at least 1");
+    }
+    return;
+  }
+
+  if (numTimerIntervals === 0) {
+    try {
+      renderHook(() => useSequentialTimerIntervals(numIterations, timerIntervals));
+    } catch (error) {
+      expect(error).toBeInstanceOf(Error);
+      expect((error as Error).message).toBe("Timer intervals array cannot be empty");
+    }
+    return;
+  }
+
   const { result } = renderHook(() => useSequentialTimerIntervals(numIterations, timerIntervals));
 
+  expect(result.current.currentTimerInterval).toEqual(timerIntervals[0]);
+  expect(result.current.firstTimerInterval).toEqual(timerIntervals[0]);
+  if (numTimerIntervals === 1 && numIterations > 1) {
+    expect(result.current.nextTimerInterval).toBe(timerIntervals[0]);
+  } else if (numTimerIntervals > 1 && numIterations >= 1) {
+    expect(result.current.nextTimerInterval).toEqual(timerIntervals[1]);
+  } else {
+    expect(result.current.nextTimerInterval).toBeNull();
+  }
+});
+
+it("should advance to the next timer interval", () => {
+  const timerIntervals: TimerInterval[] = [
+    { id: "1", duration: 10, title: "Interval 1" },
+    { id: "2", duration: 20, title: "Interval 2" },
+    { id: "3", duration: 30, title: "Interval 3" },
+  ];
+
+  const { result } = renderHook(() => useSequentialTimerIntervals(1, timerIntervals));
+
+  expect(result.current.currentTimerInterval).toEqual(timerIntervals[0]);
+  expect(result.current.firstTimerInterval).toEqual(timerIntervals[0]);
+  expect(result.current.nextTimerInterval).toEqual(timerIntervals[1]);
+
+  act(() => {
+    result.current.onAdvanceSequence();
+  });
+
+  expect(result.current.currentTimerInterval).toEqual(timerIntervals[1]);
+  expect(result.current.firstTimerInterval).toEqual(timerIntervals[0]);
+  expect(result.current.nextTimerInterval).toEqual(timerIntervals[2]);
+});
+
+it("should advance to the last timer interval", () => {
+  const timerIntervals: TimerInterval[] = [
+    { id: "1", duration: 10, title: "Interval 1" },
+    { id: "2", duration: 20, title: "Interval 2" },
+    { id: "3", duration: 30, title: "Interval 3" },
+  ];
+
+  const { result } = renderHook(() => useSequentialTimerIntervals(1, timerIntervals));
+
+  expect(result.current.currentTimerInterval).toEqual(timerIntervals[0]);
+  expect(result.current.firstTimerInterval).toEqual(timerIntervals[0]);
+  expect(result.current.nextTimerInterval).toEqual(timerIntervals[1]);
+
+  act(() => {
+    result.current.onAdvanceSequence();
+    result.current.onAdvanceSequence();
+  });
+
+  expect(result.current.currentTimerInterval).toEqual(timerIntervals[2]);
+  expect(result.current.firstTimerInterval).toEqual(timerIntervals[0]);
+  expect(result.current.nextTimerInterval).toBeNull();
+});
+
+it("should not be able to advance past the end of the sequence", () => {
+  const timerIntervals: TimerInterval[] = [
+    { id: "1", duration: 10, title: "Interval 1" },
+    { id: "2", duration: 20, title: "Interval 2" },
+    { id: "3", duration: 30, title: "Interval 3" },
+  ];
+
+  const { result } = renderHook(() => useSequentialTimerIntervals(1, timerIntervals));
+
+  // Advance to the end
   timerIntervals.forEach(() => {
     act(() => {
-      result.current.onTimerFinished();
+      result.current.onAdvanceSequence();
     });
   });
 
-  expect(result.current.currentTimerIntervalIndex).toBe(0);
-  expect(result.current.numIterationsLeft).toBe(timerIntervals.length ? numIterations - 1 : numIterations);
+  expect(result.current.currentTimerInterval).toEqual(timerIntervals[0]);
+  expect(result.current.firstTimerInterval).toEqual(timerIntervals[0]);
+  expect(result.current.nextTimerInterval).toBeNull();
 
+  // Try advance again
   act(() => {
-    result.current.onResetAll();
+    result.current.onAdvanceSequence();
   });
 
-  expect(result.current.currentTimerIntervalIndex).toBe(0);
-  expect(result.current.numIterationsLeft).toBe(numIterations);
+  expect(result.current.currentTimerInterval).toEqual(timerIntervals[0]);
+  expect(result.current.firstTimerInterval).toEqual(timerIntervals[0]);
+  expect(result.current.nextTimerInterval).toBeNull();
 });
 
-it("should handle an empty timerIntervals array", () => {
-  const { result } = renderHook(() => useSequentialTimerIntervals(3, []));
+it("should reset to the first timer interval when there is more than one timer interval", () => {
+  const timerIntervals: TimerInterval[] = [
+    { id: "1", duration: 10, title: "Interval 1" },
+    { id: "2", duration: 20, title: "Interval 2" },
+    { id: "3", duration: 30, title: "Interval 3" },
+  ];
 
-  expect(result.current.currentTimerIntervalIndex).toBe(0);
-  expect(result.current.nextTimerIntervalIndex).toBe(0);
+  const { result } = renderHook(() => useSequentialTimerIntervals(1, timerIntervals));
+
+  expect(result.current.currentTimerInterval).toEqual(timerIntervals[0]);
+  expect(result.current.firstTimerInterval).toEqual(timerIntervals[0]);
+  expect(result.current.nextTimerInterval).toEqual(timerIntervals[1]);
 
   act(() => {
-    result.current.onTimerFinished();
+    result.current.onAdvanceSequence();
   });
 
-  expect(result.current.currentTimerIntervalIndex).toBe(0);
-  expect(result.current.nextTimerIntervalIndex).toBe(0);
+  expect(result.current.currentTimerInterval).toEqual(timerIntervals[1]);
+  expect(result.current.firstTimerInterval).toEqual(timerIntervals[0]);
+  expect(result.current.nextTimerInterval).toEqual(timerIntervals[2]);
+
+  act(() => {
+    result.current.onResetSequence();
+  });
+
+  expect(result.current.currentTimerInterval).toEqual(timerIntervals[0]);
+  expect(result.current.firstTimerInterval).toEqual(timerIntervals[0]);
+  expect(result.current.nextTimerInterval).toEqual(timerIntervals[1]);
+});
+
+it("should reset to the first timer interval when there is a single timer interval", () => {
+  const timerIntervals: TimerInterval[] = [{ id: "1", duration: 10, title: "Interval 1" }];
+
+  const { result } = renderHook(() => useSequentialTimerIntervals(1, timerIntervals));
+
+  expect(result.current.currentTimerInterval).toEqual(timerIntervals[0]);
+  expect(result.current.firstTimerInterval).toEqual(timerIntervals[0]);
+  expect(result.current.nextTimerInterval).toBeNull();
+
+  act(() => {
+    result.current.onResetSequence();
+  });
+
+  expect(result.current.currentTimerInterval).toEqual(timerIntervals[0]);
+  expect(result.current.firstTimerInterval).toEqual(timerIntervals[0]);
+  expect(result.current.nextTimerInterval).toBeNull();
+});
+
+it("should handle multiple iterations correctly", () => {
+  const timerIntervals: TimerInterval[] = [
+    { id: "1", duration: 10, title: "Interval 1" },
+    { id: "2", duration: 20, title: "Interval 2" },
+    { id: "3", duration: 30, title: "Interval 3" },
+  ];
+
+  const { result } = renderHook(() => useSequentialTimerIntervals(2, timerIntervals));
+
+  expect(result.current.currentTimerInterval).toEqual(timerIntervals[0]);
+  expect(result.current.firstTimerInterval).toEqual(timerIntervals[0]);
+  expect(result.current.nextTimerInterval).toEqual(timerIntervals[1]);
+
+  // First iteration
+  act(() => {
+    result.current.onAdvanceSequence();
+  });
+
+  expect(result.current.currentTimerInterval).toEqual(timerIntervals[1]);
+  expect(result.current.firstTimerInterval).toEqual(timerIntervals[0]);
+  expect(result.current.nextTimerInterval).toEqual(timerIntervals[2]);
+
+  act(() => {
+    result.current.onAdvanceSequence();
+  });
+
+  expect(result.current.currentTimerInterval).toEqual(timerIntervals[2]);
+  expect(result.current.firstTimerInterval).toEqual(timerIntervals[0]);
+  expect(result.current.nextTimerInterval).toEqual(timerIntervals[0]);
+
+  // Second iteration
+  act(() => {
+    result.current.onAdvanceSequence();
+  });
+
+  expect(result.current.currentTimerInterval).toEqual(timerIntervals[0]);
+  expect(result.current.firstTimerInterval).toEqual(timerIntervals[0]);
+  expect(result.current.nextTimerInterval).toEqual(timerIntervals[1]);
+
+  act(() => {
+    result.current.onAdvanceSequence();
+  });
+
+  expect(result.current.currentTimerInterval).toEqual(timerIntervals[1]);
+  expect(result.current.firstTimerInterval).toEqual(timerIntervals[0]);
+  expect(result.current.nextTimerInterval).toEqual(timerIntervals[2]);
+
+  act(() => {
+    result.current.onAdvanceSequence();
+  });
+
+  expect(result.current.currentTimerInterval).toEqual(timerIntervals[2]);
+  expect(result.current.firstTimerInterval).toEqual(timerIntervals[0]);
+  expect(result.current.nextTimerInterval).toBeNull();
+
+  // Try to advance past the end
+  act(() => {
+    result.current.onAdvanceSequence();
+  });
+
+  expect(result.current.currentTimerInterval).toEqual(timerIntervals[0]);
+  expect(result.current.firstTimerInterval).toEqual(timerIntervals[0]);
+  expect(result.current.nextTimerInterval).toBeNull();
 });
