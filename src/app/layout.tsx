@@ -1,6 +1,7 @@
 import { Box, CssBaseline } from "@mui/material";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
 import { ThemeProvider } from "@mui/material/styles";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
 
@@ -39,6 +40,7 @@ export default function RootLayout({
                 }}
               >
                 {children}
+                <SpeedInsights />
               </Box>
             </TimersContextProviderClientOnlyComponent>
           </ThemeProvider>
