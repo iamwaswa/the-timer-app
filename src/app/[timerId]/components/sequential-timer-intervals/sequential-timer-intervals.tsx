@@ -13,17 +13,27 @@ type SequentialTimerIntervalsProps = {
 };
 
 export function SequentialTimerIntervals({ numIterations, timerIntervals }: SequentialTimerIntervalsProps) {
-  const { currentTimerInterval, nextTimerInterval, onAdvanceSequence, onResetSequence } = useSequentialTimerIntervals(
-    numIterations,
-    timerIntervals,
-  );
+  const { currentBackgroundColor, currentTimerInterval, nextTimerInterval, advanceSequence, resetSequence } =
+    useSequentialTimerIntervals(numIterations, timerIntervals);
 
   return (
     <>
       <SequentialTimerInterval
+        backgroundColor={currentBackgroundColor}
         timerInterval={currentTimerInterval}
-        onAdvanceSequence={onAdvanceSequence}
-        onResetSequence={onResetSequence}
+        onDurationComplete={() => {
+          const timerInterval = advanceSequence();
+
+          return timerInterval === null
+            ? { type: "pause" }
+            : {
+                payload: {
+                  duration: timerInterval.duration,
+                },
+                type: "restart",
+              };
+        }}
+        resetTimerInterval={resetSequence}
       />
       {nextTimerInterval && (
         <Snackbar

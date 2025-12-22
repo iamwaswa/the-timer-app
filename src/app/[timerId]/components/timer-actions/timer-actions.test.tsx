@@ -84,6 +84,9 @@ it('should pause when isPlaying is true and "Pause" is clicked', async () => {
     </ThemeProvider>,
   );
 
+  expect(screen.getByRole("button", { name: "Pause" })).toBeInTheDocument();
+  expect(screen.queryByRole("button", { name: "Play" })).not.toBeInTheDocument();
+
   await event.click(screen.getByRole("button", { name: "Pause" }));
 
   expect(pause).toHaveBeenCalled();
@@ -106,6 +109,9 @@ it('should play when isPlaying is false and "Play" is clicked', async () => {
       />
     </ThemeProvider>,
   );
+
+  expect(screen.getByRole("button", { name: "Play" })).toBeInTheDocument();
+  expect(screen.queryByRole("button", { name: "Pause" })).not.toBeInTheDocument();
 
   await event.click(screen.getByRole("button", { name: "Play" }));
 

@@ -2,33 +2,31 @@
 
 import { Box } from "@mui/material";
 import type { Property } from "csstype";
-import { useState } from "react";
 
 import { usePlayCountdownBeep, useSequentialTimerInterval } from "@/hooks";
-import type { TimerInterval } from "@/types";
-import { formatDuration, pickTimerIntervalBackgroundColor } from "@/utils";
+import type { TimerInterval, TimerIntervalReducerPauseAction, TimerIntervalReducerRestartAction } from "@/types";
+import { formatDuration } from "@/utils";
 
 import { TimerActions } from "../timer-actions";
 import { TimerDuration } from "../timer-duration";
 import { TimerTitle } from "../timer-title";
 
 type SequentualTimerIntervalProps = {
+  backgroundColor: Property.BackgroundColor;
   timerInterval: TimerInterval;
-  onAdvanceSequence(): TimerInterval | null;
-  onResetSequence(): TimerInterval;
+  onDurationComplete(): TimerIntervalReducerPauseAction | TimerIntervalReducerRestartAction;
+  resetTimerInterval(): TimerInterval;
 };
 
 export function SequentialTimerInterval({
+  backgroundColor,
   timerInterval,
-  onAdvanceSequence,
-  onResetSequence,
+  onDurationComplete,
+  resetTimerInterval,
 }: SequentualTimerIntervalProps) {
-  const [timerIntervalBackgroundColor] = useState<Property.BackgroundColor>(pickTimerIntervalBackgroundColor);
-
-  const { animationToggle, duration, status, pause, play, reset, resetAll, restart } = useSequentialTimerInterval(
+  const { animationToggle, duration, status, pause, play, reset, restart } = useSequentialTimerInterval(
     timerInterval,
-    onAdvanceSequence,
-    onResetSequence,
+    onDurationComplete,
   );
 
   usePlayCountdownBeep(duration, status === "playing");
@@ -37,7 +35,7 @@ export function SequentialTimerInterval({
     <Box
       sx={{
         alignItems: "center",
-        backgroundColor: timerIntervalBackgroundColor,
+        backgroundColor,
         boxShadow: `inset 0 0 0 9999px rgba(0, 0, 0, 0.3)`,
         display: "flex",
         flexDirection: "column",
@@ -55,7 +53,7 @@ export function SequentialTimerInterval({
           },
           animation: `shift-left-to-right ${timerInterval.duration}s linear forwards`,
           animationPlayState: status === "playing" ? "running" : "paused",
-          backgroundColor: timerIntervalBackgroundColor,
+          backgroundColor,
           height: "100%",
           left: 0,
           opacity: 0.25,
@@ -82,17 +80,24 @@ export function SequentialTimerInterval({
             flexDirection: "column",
           }}
         >
-          <TimerDuration backgroundColor={timerIntervalBackgroundColor}>{formatDuration(duration)}</TimerDuration>
-          <TimerTitle backgroundColor={timerIntervalBackgroundColor}>{timerInterval.title}</TimerTitle>
+          <TimerDuration backgroundColor={backgroundColor}>{formatDuration(duration)}</TimerDuration>
+          <TimerTitle backgroundColor={backgroundColor}>{timerInterval.title}</TimerTitle>
         </Box>
         <TimerActions
-          backgroundColor={timerIntervalBackgroundColor}
+          backgroundColor={backgroundColor}
           isPlaying={status === "playing"}
           pause={pause}
           play={play}
-          reset={reset}
-          resetAll={resetAll}
-          restart={restart}
+          reset={() => {
+            reset();
+          }}
+          resetAll={() => {
+            const updatedTimerInterval = resetTimerInterval();
+            reset(updatedTimerInterval);
+          }}
+          restart={() => {
+            restart();
+          }}
         />
       </Box>
     </Box>

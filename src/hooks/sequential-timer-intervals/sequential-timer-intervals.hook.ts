@@ -1,8 +1,10 @@
 "use client";
 
+import type { Property } from "csstype";
 import { useReducer } from "react";
 
 import type { TimerInterval } from "@/types";
+import { pickTimerIntervalBackgroundColor } from "@/utils";
 
 export function useSequentialTimerIntervals(numIterations: number, timerIntervals: TimerInterval[]) {
   const [timerIntervalIdToEntityMap, timerIntervalRefTree] = createTimerIntervalRef(numIterations, timerIntervals);
@@ -16,16 +18,17 @@ export function useSequentialTimerIntervals(numIterations: number, timerInterval
   const isLastTimerInterval = nextRef === null && currentRef.id === firstRef.id;
 
   return {
+    currentBackgroundColor: currentRef.backgroundColor,
     currentTimerInterval: timerIntervalIdToEntityMap.get(currentRef.id)!,
     firstTimerInterval: timerIntervalIdToEntityMap.get(firstRef.id)!,
     nextTimerInterval: nextRef?.id ? timerIntervalIdToEntityMap.get(nextRef.id)! : null,
-    onAdvanceSequence() {
+    advanceSequence() {
       if (!isLastTimerInterval) {
         dispatch({ type: "advance-sequence" });
       }
       return nextRef?.id ? timerIntervalIdToEntityMap.get(nextRef.id)! : null;
     },
-    onResetSequence() {
+    resetSequence() {
       dispatch({ type: "reset-sequence" });
       return timerIntervalIdToEntityMap.get(firstRef.id)!;
     },
@@ -34,6 +37,7 @@ export function useSequentialTimerIntervals(numIterations: number, timerInterval
 
 type TimerIntervalRef = {
   id: string;
+  backgroundColor: Property.BackgroundColor;
   next: TimerIntervalRef | null;
 };
 
@@ -50,8 +54,8 @@ function createTimerIntervalRef(
   }
 
   const map = new Map<string, TimerInterval>();
-  let firstRef: TimerIntervalRef = { id: "", next: null };
-  let previousRef: TimerIntervalRef = { id: "", next: null };
+  let firstRef: TimerIntervalRef = { id: "", backgroundColor: "", next: null };
+  let previousRef: TimerIntervalRef = { id: "", backgroundColor: "", next: null };
 
   let currentIteration = 1;
   do {
@@ -62,17 +66,19 @@ function createTimerIntervalRef(
         map.set(timerInterval.id, timerInterval);
         firstRef = {
           id: timerInterval.id,
+          backgroundColor: pickTimerIntervalBackgroundColor(),
           next: null,
         };
         previousRef = firstRef;
         continue;
       }
 
+      map.set(timerInterval.id, timerInterval);
       const currentRef: TimerIntervalRef = {
         id: timerInterval.id,
+        backgroundColor: pickTimerIntervalBackgroundColor(),
         next: null,
       };
-      map.set(currentRef.id, timerInterval);
       previousRef.next = currentRef;
       previousRef = currentRef;
     }

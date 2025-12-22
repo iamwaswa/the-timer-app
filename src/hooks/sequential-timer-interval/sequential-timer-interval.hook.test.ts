@@ -18,16 +18,14 @@ it("should initialize with the correct duration and status", () => {
     duration: 10,
     title: "Test Interval",
   };
-  const onAdvanceSequence = vi.fn();
-  const onResetSequence = vi.fn();
+  const onDurationComplete = vi.fn();
 
-  const { result } = renderHook(() => useSequentialTimerInterval(timerInterval, onAdvanceSequence, onResetSequence));
+  const { result } = renderHook(() => useSequentialTimerInterval(timerInterval, onDurationComplete));
 
   expect(result.current.animationToggle).toBe(0);
   expect(result.current.duration).toBe(timerInterval.duration);
   expect(result.current.status).toBe("idle");
-  expect(onAdvanceSequence).not.toHaveBeenCalled();
-  expect(onResetSequence).not.toHaveBeenCalled();
+  expect(onDurationComplete).not.toHaveBeenCalled();
 });
 
 it("should decrease duration when playing", () => {
@@ -36,10 +34,9 @@ it("should decrease duration when playing", () => {
     duration: 10,
     title: "Test Interval",
   };
-  const onAdvanceSequence = vi.fn();
-  const onResetSequence = vi.fn();
+  const onDurationComplete = vi.fn();
 
-  const { result } = renderHook(() => useSequentialTimerInterval(timerInterval, onAdvanceSequence, onResetSequence));
+  const { result } = renderHook(() => useSequentialTimerInterval(timerInterval, onDurationComplete));
 
   expect(result.current.animationToggle).toBe(0);
   expect(result.current.duration).toBe(timerInterval.duration);
@@ -61,8 +58,7 @@ it("should decrease duration when playing", () => {
   expect(result.current.animationToggle).toBe(0);
   expect(result.current.duration).toBe((timerInterval.duration * 1000 - advanceTimeInMs) / 1000);
   expect(result.current.status).toBe("playing");
-  expect(onAdvanceSequence).not.toHaveBeenCalled();
-  expect(onResetSequence).not.toHaveBeenCalled();
+  expect(onDurationComplete).not.toHaveBeenCalled();
 });
 
 it("should pause the timer interval", () => {
@@ -71,10 +67,9 @@ it("should pause the timer interval", () => {
     duration: 10,
     title: "Test Interval",
   };
-  const onAdvanceSequence = vi.fn();
-  const onResetSequence = vi.fn();
+  const onDurationComplete = vi.fn();
 
-  const { result } = renderHook(() => useSequentialTimerInterval(timerInterval, onAdvanceSequence, onResetSequence));
+  const { result } = renderHook(() => useSequentialTimerInterval(timerInterval, onDurationComplete));
 
   expect(result.current.animationToggle).toBe(0);
   expect(result.current.duration).toBe(timerInterval.duration);
@@ -120,8 +115,7 @@ it("should pause the timer interval", () => {
   expect(result.current.animationToggle).toBe(0);
   expect(result.current.duration).toBe((timerInterval.duration * 1000 - advanceTimeInMs) / 1000);
   expect(result.current.status).toBe("idle");
-  expect(onAdvanceSequence).not.toHaveBeenCalled();
-  expect(onResetSequence).not.toHaveBeenCalled();
+  expect(onDurationComplete).not.toHaveBeenCalled();
 });
 
 it("should reset the timer interval to its initial duration", () => {
@@ -130,19 +124,25 @@ it("should reset the timer interval to its initial duration", () => {
     duration: 10,
     title: "Test Interval",
   };
-  const onAdvanceSequence = vi.fn();
-  const onResetSequence = vi.fn();
+  const onDurationComplete = vi.fn();
 
-  const { result } = renderHook(() => useSequentialTimerInterval(timerInterval, onAdvanceSequence, onResetSequence));
+  const { result } = renderHook(() => useSequentialTimerInterval(timerInterval, onDurationComplete));
 
   expect(result.current.animationToggle).toBe(0);
   expect(result.current.animationToggle).toBe(0);
   expect(result.current.duration).toBe(timerInterval.duration);
   expect(result.current.status).toBe("idle");
 
-  const advanceTimeInMs = 2000;
   act(() => {
     result.current.play();
+  });
+
+  expect(result.current.animationToggle).toBe(0);
+  expect(result.current.duration).toBe(timerInterval.duration);
+  expect(result.current.status).toBe("playing");
+
+  const advanceTimeInMs = 2000;
+  act(() => {
     vi.advanceTimersByTime(advanceTimeInMs);
   });
 
@@ -157,8 +157,7 @@ it("should reset the timer interval to its initial duration", () => {
   expect(result.current.animationToggle).toBe(1);
   expect(result.current.duration).toBe(timerInterval.duration);
   expect(result.current.status).toBe("idle");
-  expect(onAdvanceSequence).not.toHaveBeenCalled();
-  expect(onResetSequence).not.toHaveBeenCalled();
+  expect(onDurationComplete).not.toHaveBeenCalled();
 
   act(() => {
     result.current.reset();
@@ -167,8 +166,7 @@ it("should reset the timer interval to its initial duration", () => {
   expect(result.current.animationToggle).toBe(0);
   expect(result.current.duration).toBe(timerInterval.duration);
   expect(result.current.status).toBe("idle");
-  expect(onAdvanceSequence).not.toHaveBeenCalled();
-  expect(onResetSequence).not.toHaveBeenCalled();
+  expect(onDurationComplete).not.toHaveBeenCalled();
 });
 
 it("should restart the timer interval", () => {
@@ -177,18 +175,24 @@ it("should restart the timer interval", () => {
     duration: 10,
     title: "Test Interval",
   };
-  const onAdvanceSequence = vi.fn();
-  const onResetSequence = vi.fn();
+  const onDurationComplete = vi.fn();
 
-  const { result } = renderHook(() => useSequentialTimerInterval(timerInterval, onAdvanceSequence, onResetSequence));
+  const { result } = renderHook(() => useSequentialTimerInterval(timerInterval, onDurationComplete));
 
   expect(result.current.animationToggle).toBe(0);
   expect(result.current.duration).toBe(timerInterval.duration);
   expect(result.current.status).toBe("idle");
 
-  const advanceTimeInMs = 2000;
   act(() => {
     result.current.play();
+  });
+
+  expect(result.current.animationToggle).toBe(0);
+  expect(result.current.duration).toBe(timerInterval.duration);
+  expect(result.current.status).toBe("playing");
+
+  const advanceTimeInMs = 2000;
+  act(() => {
     vi.advanceTimersByTime(advanceTimeInMs);
   });
 
@@ -220,8 +224,7 @@ it("should restart the timer interval", () => {
   expect(result.current.animationToggle).toBe(0);
   expect(result.current.duration).toBe((timerInterval.duration * 1000 - advanceTimeInMs2) / 1000);
   expect(result.current.status).toBe("playing");
-  expect(onAdvanceSequence).not.toHaveBeenCalled();
-  expect(onResetSequence).not.toHaveBeenCalled();
+  expect(onDurationComplete).not.toHaveBeenCalled();
 });
 
 it.each([
@@ -237,10 +240,15 @@ it.each([
     duration: 3,
     title: "Test Interval",
   };
-  const onAdvanceSequence = vi.fn().mockReturnValue(nextTimerInterval);
-  const onResetSequence = vi.fn();
+  const onDurationComplete = vi
+    .fn()
+    .mockReturnValue(
+      nextTimerInterval === null
+        ? { type: "pause" }
+        : { payload: { duration: nextTimerInterval.duration }, type: "restart" },
+    );
 
-  const { result } = renderHook(() => useSequentialTimerInterval(timerInterval, onAdvanceSequence, onResetSequence));
+  const { result } = renderHook(() => useSequentialTimerInterval(timerInterval, onDurationComplete));
 
   expect(result.current.animationToggle).toBe(0);
   expect(result.current.duration).toBe(timerInterval.duration);
@@ -258,52 +266,5 @@ it.each([
     vi.advanceTimersByTime(timerInterval.duration * 1000);
   });
 
-  expect(result.current.animationToggle).toBe(0);
-  expect(result.current.duration).toBe(nextTimerInterval === null ? 0 : nextTimerInterval.duration);
-  expect(result.current.status).toBe(nextTimerInterval === null ? "idle" : "playing");
-  expect(onAdvanceSequence).toHaveBeenCalled();
-  expect(onResetSequence).not.toHaveBeenCalled();
-});
-
-it("should call onResetSequence when reset all is called", () => {
-  const firstTimerInterval: TimerInterval = {
-    id: "first-test-id",
-    duration: 5,
-    title: "First Test Interval",
-  };
-  const secondTimerInterval: TimerInterval = {
-    id: "second-test-id",
-    duration: 3,
-    title: "Second Test Interval",
-  };
-  const onAdvanceSequence = vi.fn();
-  const onResetSequence = vi.fn().mockReturnValue(firstTimerInterval);
-
-  const { result } = renderHook(() =>
-    useSequentialTimerInterval(secondTimerInterval, onAdvanceSequence, onResetSequence),
-  );
-
-  expect(result.current.animationToggle).toBe(0);
-  expect(result.current.duration).toBe(secondTimerInterval.duration);
-  expect(result.current.status).toBe("idle");
-
-  act(() => {
-    result.current.resetAll();
-  });
-
-  expect(result.current.animationToggle).toBe(1);
-  expect(result.current.duration).toBe(firstTimerInterval.duration);
-  expect(result.current.status).toBe("idle");
-  expect(onAdvanceSequence).not.toHaveBeenCalled();
-  expect(onResetSequence).toHaveBeenCalled();
-
-  act(() => {
-    result.current.resetAll();
-  });
-
-  expect(result.current.animationToggle).toBe(0);
-  expect(result.current.duration).toBe(firstTimerInterval.duration);
-  expect(result.current.status).toBe("idle");
-  expect(onAdvanceSequence).not.toHaveBeenCalled();
-  expect(onResetSequence).toHaveBeenCalled();
+  expect(onDurationComplete).toHaveBeenCalled();
 });

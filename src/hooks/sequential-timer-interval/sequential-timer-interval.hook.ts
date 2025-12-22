@@ -2,28 +2,28 @@
 
 import { useEffect, useEffectEvent, useReducer, useRef } from "react";
 
-import type { TimerInterval } from "@/types";
+import type {
+  TimerInterval,
+  TimerIntervalReducerAction,
+  TimerIntervalReducerPauseAction,
+  TimerIntervalReducerRestartAction,
+  TimerIntervalReducerState,
+  TimerIntervalReducerStateAnimationToggle,
+} from "@/types";
 
 export function useSequentialTimerInterval(
   timerInterval: TimerInterval,
-  onAdvanceSequence: () => TimerInterval | null,
-  onResetSequence: () => TimerInterval,
+  onDurationComplete: () => TimerIntervalReducerPauseAction | TimerIntervalReducerRestartAction,
 ) {
+  const timeout = useRef<NodeJS.Timeout | undefined>(undefined);
+
   const [{ animationToggle, duration, status }, dispatch] = useReducer(timerIntervalReducer, {
     animationToggle: 0,
     duration: timerInterval.duration,
     status: "idle",
   });
 
-  const timeout = useRef<NodeJS.Timeout | undefined>(undefined);
-
-  function startInterval() {
-    timeout.current = setInterval(() => {
-      dispatch({ type: "decrement-duration" });
-    }, 1000);
-  }
-
-  const onAdvanceSequenceEvent = useEffectEvent(onAdvanceSequence);
+  const onDurationCompleteEvent = useEffectEvent(onDurationComplete);
 
   function pause() {
     clearInterval(timeout.current);
@@ -32,13 +32,30 @@ export function useSequentialTimerInterval(
 
   const pauseEvent = useEffectEvent(pause);
 
+  function restart(restartTimerIntervalDuration = timerInterval.duration) {
+    clearInterval(timeout.current);
+    startInterval();
+    dispatch({ payload: { duration: restartTimerIntervalDuration }, type: "restart" });
+  }
+
+  function startInterval() {
+    timeout.current = setInterval(() => {
+      dispatch({ type: "decrement-duration" });
+    }, 1000);
+  }
+
+  const restartEvent = useEffectEvent(restart);
+
   useEffect(() => {
     if (duration === 0) {
-      const nextTimerInterval = onAdvanceSequenceEvent();
-      if (nextTimerInterval === null) {
-        pauseEvent();
-      } else {
-        dispatch({ type: "set-duration", payload: { updatedDuration: nextTimerInterval.duration } });
+      const timerIntervalReducerAction = onDurationCompleteEvent();
+      switch (timerIntervalReducerAction.type) {
+        case "pause":
+          pauseEvent();
+          break;
+        case "restart":
+          restartEvent(timerIntervalReducerAction.payload.duration);
+          break;
       }
     }
   }, [duration]);
@@ -52,59 +69,17 @@ export function useSequentialTimerInterval(
       startInterval();
       dispatch({ type: "play" });
     },
-    reset() {
+    reset(updatedTimerInterval = timerInterval) {
       clearInterval(timeout.current);
-      dispatch({ payload: { duration: timerInterval.duration }, type: "reset" });
+      dispatch({ payload: { duration: updatedTimerInterval.duration }, type: "reset" });
     },
-    resetAll() {
-      clearInterval(timeout.current);
-      const firstTimerInterval = onResetSequence();
-      dispatch({ payload: { duration: firstTimerInterval.duration }, type: "reset" });
-    },
-    restart() {
+    restart(restartTimerInterval = timerInterval) {
       clearInterval(timeout.current);
       startInterval();
-      dispatch({ payload: { duration: timerInterval.duration }, type: "restart" });
+      dispatch({ payload: { duration: restartTimerInterval.duration }, type: "restart" });
     },
   };
 }
-
-type AnimationToggle = 0 | 1;
-
-type TimerIntervalReducerState = {
-  animationToggle: AnimationToggle;
-  duration: number;
-  status: "idle" | "playing";
-};
-
-type TimerIntervalReducerAction =
-  | {
-      type: "decrement-duration";
-    }
-  | {
-      type: "pause";
-    }
-  | {
-      type: "play";
-    }
-  | {
-      payload: {
-        duration: number;
-      };
-      type: "reset";
-    }
-  | {
-      payload: {
-        duration: number;
-      };
-      type: "restart";
-    }
-  | {
-      payload: {
-        updatedDuration: number;
-      };
-      type: "set-duration";
-    };
 
 function timerIntervalReducer(state: TimerIntervalReducerState, action: TimerIntervalReducerAction) {
   switch (action.type) {
@@ -126,21 +101,16 @@ function timerIntervalReducer(state: TimerIntervalReducerState, action: TimerInt
     case "reset":
       return {
         ...state,
-        animationToggle: (state.animationToggle === 1 ? 0 : 1) as AnimationToggle,
+        animationToggle: (state.animationToggle === 1 ? 0 : 1) as TimerIntervalReducerStateAnimationToggle,
         duration: action.payload.duration,
         status: "idle" as const,
       };
     case "restart":
       return {
         ...state,
-        animationToggle: (state.animationToggle === 1 ? 0 : 1) as AnimationToggle,
+        animationToggle: (state.animationToggle === 1 ? 0 : 1) as TimerIntervalReducerStateAnimationToggle,
         duration: action.payload.duration,
         status: "playing" as const,
-      };
-    case "set-duration":
-      return {
-        ...state,
-        duration: action.payload.updatedDuration,
       };
   }
 }

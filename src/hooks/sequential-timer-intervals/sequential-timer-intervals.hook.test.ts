@@ -75,7 +75,7 @@ it("should advance to the next timer interval", () => {
   expect(result.current.nextTimerInterval).toEqual(timerIntervals[1]);
 
   act(() => {
-    result.current.onAdvanceSequence();
+    result.current.advanceSequence();
   });
 
   expect(result.current.currentTimerInterval).toEqual(timerIntervals[1]);
@@ -97,8 +97,8 @@ it("should advance to the last timer interval", () => {
   expect(result.current.nextTimerInterval).toEqual(timerIntervals[1]);
 
   act(() => {
-    result.current.onAdvanceSequence();
-    result.current.onAdvanceSequence();
+    result.current.advanceSequence();
+    result.current.advanceSequence();
   });
 
   expect(result.current.currentTimerInterval).toEqual(timerIntervals[2]);
@@ -118,7 +118,7 @@ it("should not be able to advance past the end of the sequence", () => {
   // Advance to the end
   timerIntervals.forEach(() => {
     act(() => {
-      result.current.onAdvanceSequence();
+      result.current.advanceSequence();
     });
   });
 
@@ -128,7 +128,7 @@ it("should not be able to advance past the end of the sequence", () => {
 
   // Try advance again
   act(() => {
-    result.current.onAdvanceSequence();
+    result.current.advanceSequence();
   });
 
   expect(result.current.currentTimerInterval).toEqual(timerIntervals[0]);
@@ -150,7 +150,7 @@ it("should reset to the first timer interval when there is more than one timer i
   expect(result.current.nextTimerInterval).toEqual(timerIntervals[1]);
 
   act(() => {
-    result.current.onAdvanceSequence();
+    result.current.advanceSequence();
   });
 
   expect(result.current.currentTimerInterval).toEqual(timerIntervals[1]);
@@ -158,7 +158,7 @@ it("should reset to the first timer interval when there is more than one timer i
   expect(result.current.nextTimerInterval).toEqual(timerIntervals[2]);
 
   act(() => {
-    result.current.onResetSequence();
+    result.current.resetSequence();
   });
 
   expect(result.current.currentTimerInterval).toEqual(timerIntervals[0]);
@@ -176,7 +176,7 @@ it("should reset to the first timer interval when there is a single timer interv
   expect(result.current.nextTimerInterval).toBeNull();
 
   act(() => {
-    result.current.onResetSequence();
+    result.current.resetSequence();
   });
 
   expect(result.current.currentTimerInterval).toEqual(timerIntervals[0]);
@@ -199,7 +199,7 @@ it("should handle multiple iterations correctly", () => {
 
   // First iteration
   act(() => {
-    result.current.onAdvanceSequence();
+    result.current.advanceSequence();
   });
 
   expect(result.current.currentTimerInterval).toEqual(timerIntervals[1]);
@@ -207,7 +207,7 @@ it("should handle multiple iterations correctly", () => {
   expect(result.current.nextTimerInterval).toEqual(timerIntervals[2]);
 
   act(() => {
-    result.current.onAdvanceSequence();
+    result.current.advanceSequence();
   });
 
   expect(result.current.currentTimerInterval).toEqual(timerIntervals[2]);
@@ -216,7 +216,7 @@ it("should handle multiple iterations correctly", () => {
 
   // Second iteration
   act(() => {
-    result.current.onAdvanceSequence();
+    result.current.advanceSequence();
   });
 
   expect(result.current.currentTimerInterval).toEqual(timerIntervals[0]);
@@ -224,7 +224,7 @@ it("should handle multiple iterations correctly", () => {
   expect(result.current.nextTimerInterval).toEqual(timerIntervals[1]);
 
   act(() => {
-    result.current.onAdvanceSequence();
+    result.current.advanceSequence();
   });
 
   expect(result.current.currentTimerInterval).toEqual(timerIntervals[1]);
@@ -232,7 +232,7 @@ it("should handle multiple iterations correctly", () => {
   expect(result.current.nextTimerInterval).toEqual(timerIntervals[2]);
 
   act(() => {
-    result.current.onAdvanceSequence();
+    result.current.advanceSequence();
   });
 
   expect(result.current.currentTimerInterval).toEqual(timerIntervals[2]);
@@ -241,7 +241,7 @@ it("should handle multiple iterations correctly", () => {
 
   // Try to advance past the end
   act(() => {
-    result.current.onAdvanceSequence();
+    result.current.advanceSequence();
   });
 
   expect(result.current.currentTimerInterval).toEqual(timerIntervals[0]);
