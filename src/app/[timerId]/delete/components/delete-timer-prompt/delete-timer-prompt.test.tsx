@@ -3,23 +3,8 @@ import { userEvent } from "@testing-library/user-event";
 
 import { DeleteTimerPrompt } from "./delete-timer-prompt";
 
-let originalWindowLocalStorage: typeof window.localStorage;
-
-vi.mock("next/navigation", () => ({
-  ...vi.importActual("next/navigation"),
-  redirect: vi.fn(),
-}));
-
 beforeEach(() => {
-  originalWindowLocalStorage = window.localStorage;
   vi.resetAllMocks();
-});
-
-afterEach(() => {
-  Object.defineProperty(window, "localStorage", {
-    value: originalWindowLocalStorage,
-    configurable: true,
-  });
 });
 
 it("should render the delete timer prompt with the correct title", () => {

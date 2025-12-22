@@ -1,8 +1,8 @@
 import { render, screen } from "@testing-library/react";
 import { notFound, useParams } from "next/navigation";
 
-import { useGetTimersContext } from "@/context";
-import { TimerType } from "@/types";
+import { TimersContext } from "@/context";
+import type { Timer } from "@/types";
 
 import TimerPage from "./page";
 
@@ -16,41 +16,78 @@ const useParamsMock = vi.mocked(useParams);
 
 const notFoundMock = vi.mocked(notFound);
 
-vi.mock("@/context", () => ({
-  ...vi.importActual("@/context"),
-  useGetTimersContext: vi.fn(),
-}));
-
-const useGetTimersContextMock = vi.mocked(useGetTimersContext);
-
-vi.mock("./components", () => ({
-  ...vi.importActual("./components"),
-  SequentialTimerIntervals: vi.fn(() => <div data-testid="sequential-timer-intervals" />),
-}));
-
 beforeEach(() => {
   vi.resetAllMocks();
+  vi.useFakeTimers();
 });
 
-it("should render as expected when the timer exists", () => {
-  const timers: TimerType[] = [
+afterEach(() => {
+  vi.useRealTimers();
+});
+
+it("should render as expected when a single timer interval exists", () => {
+  const timers: Timer[] = [
     {
       id: "1",
-      numIterations: 3,
-      timerIntervals: [],
+      numIterations: 1,
+      timerIntervals: [
+        {
+          id: "1",
+          duration: 10,
+          title: "Work",
+        },
+      ],
       title: "Timer 1",
     },
   ];
   useParamsMock.mockReturnValue({ timerId: timers[0].id });
-  useGetTimersContextMock.mockReturnValue(timers);
 
-  render(<TimerPage />);
+  render(
+    <TimersContext.Provider value={{ timers, updateTimers: vi.fn() }}>
+      <TimerPage />
+    </TimersContext.Provider>,
+  );
 
-  expect(screen.getByTestId("sequential-timer-intervals")).toBeInTheDocument();
+  expect(screen.getByRole("heading", { level: 1, name: "00:00:10" })).toBeInTheDocument();
+  expect(screen.getByRole("heading", { level: 2, name: timers[0].timerIntervals[0].title })).toBeInTheDocument();
+  expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+});
+
+it("should render as expected when more than one timer interval exists", () => {
+  const timers: Timer[] = [
+    {
+      id: "1",
+      numIterations: 3,
+      timerIntervals: [
+        {
+          id: "1",
+          duration: 10,
+          title: "Work",
+        },
+        {
+          id: "2",
+          duration: 10,
+          title: "Home",
+        },
+      ],
+      title: "Timer 1",
+    },
+  ];
+  useParamsMock.mockReturnValue({ timerId: timers[0].id });
+
+  render(
+    <TimersContext.Provider value={{ timers, updateTimers: vi.fn() }}>
+      <TimerPage />
+    </TimersContext.Provider>,
+  );
+
+  expect(screen.getByRole("heading", { level: 1, name: "00:00:10" })).toBeInTheDocument();
+  expect(screen.getByRole("heading", { level: 2, name: timers[0].timerIntervals[0].title })).toBeInTheDocument();
+  expect(screen.getByRole("alert")).toHaveTextContent(`Up next: ${timers[0].timerIntervals[1].title}`);
 });
 
 it("should call notFound when the timer does not exist", () => {
-  const timers: TimerType[] = [
+  const timers: Timer[] = [
     {
       id: "1",
       numIterations: 3,
@@ -59,11 +96,14 @@ it("should call notFound when the timer does not exist", () => {
     },
   ];
   useParamsMock.mockReturnValue({ timerId: "non-existent-timer" });
-  useGetTimersContextMock.mockReturnValue(timers);
 
   expect(notFoundMock).not.toHaveBeenCalled();
 
-  render(<TimerPage />);
+  render(
+    <TimersContext.Provider value={{ timers, updateTimers: vi.fn() }}>
+      <TimerPage />
+    </TimersContext.Provider>,
+  );
 
   expect(notFoundMock).toHaveBeenCalled();
 });
