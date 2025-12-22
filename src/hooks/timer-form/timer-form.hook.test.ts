@@ -2,7 +2,7 @@ import { renderHook } from "@testing-library/react";
 import { act } from "react";
 
 import * as TimersContextHookModule from "@/context/timers/timers.context.hook";
-import type { TimerInterval, TimerType } from "@/types";
+import type { Timer, TimerInterval } from "@/types";
 import * as generateRandomUUIDUtilModule from "@/utils/generate-random-uuid/generate-random-uuid.util";
 
 import { useTimerForm } from "./timer-form.hook";
@@ -40,7 +40,7 @@ it("should initialize with the initialValue when one is provided", () => {
   generateRandomUUIDSpy.mockImplementation(() => id);
   useTimersContextSpy.mockImplementation(() => [[], vi.fn()]);
 
-  const initialValue: TimerType = {
+  const initialValue: Timer = {
     id,
     numIterations: 2,
     title: "Existing Timer",
@@ -126,7 +126,7 @@ it("should save a new timer to localStorage if it's a new timer", () => {
     result.current[1].save();
   });
 
-  const expectedNewTimer: TimerType = {
+  const expectedNewTimer: Timer = {
     id: id1,
     numIterations: 1,
     title: "New timer",
@@ -145,7 +145,7 @@ it("should save a new timer to localStorage if it's a new timer", () => {
 
 it("should update an existing timer in localStorage if the timer already exists", () => {
   const id = "existing-timer-id";
-  const existingTimers: TimerType[] = [
+  const existingTimers: Timer[] = [
     {
       id,
       numIterations: 1,

@@ -3,12 +3,12 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
 import Link from "next/link";
 
-import type { TimerType } from "@/types";
+import type { Timer } from "@/types";
 
 type DeleteTimerPromptProps = {
-  timer: TimerType;
-  timers: TimerType[];
-  setTimers(timers: TimerType[]): void;
+  timer: Timer;
+  timers: Timer[];
+  setTimers(timers: Timer[]): void;
 };
 
 export function DeleteTimerPrompt({ timer, timers, setTimers }: DeleteTimerPromptProps) {

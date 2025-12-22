@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import { type PropsWithChildren, useState } from "react";
 
-import type { TimerInterval, TimerType } from "@/types";
+import type { Timer, TimerInterval } from "@/types";
 import { parseJson } from "@/utils";
 
 import { TimersContext, type TimersContextType } from "./timers.context";
@@ -37,13 +37,13 @@ function getTimersFromLocalStorage() {
     return [];
   }
 
-  return parseJson<TimerType[]>(
+  return parseJson<Timer[]>(
     window.localStorage.getItem(timersLocalStorageKey),
     function parseJsonToTimerTypeArray(json) {
       if (!Array.isArray(json)) {
         return [];
       } else {
-        return json.filter((item): item is TimerType => {
+        return json.filter((item): item is Timer => {
           return (
             typeof item === "object" &&
             item !== null &&

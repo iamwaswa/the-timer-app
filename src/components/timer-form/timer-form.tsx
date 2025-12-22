@@ -5,10 +5,10 @@ import { redirect } from "next/navigation";
 
 import { TimerIntervalFormFields } from "@/components";
 import { useTimerForm } from "@/hooks";
-import type { TimerType } from "@/types";
+import type { Timer } from "@/types";
 
 type TimerFormProps = {
-  timer?: TimerType;
+  timer?: Timer;
 };
 
 export function TimerForm({ timer }: TimerFormProps) {

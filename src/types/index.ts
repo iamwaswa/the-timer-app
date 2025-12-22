@@ -41,7 +41,7 @@ export type TimerIntervalReducerAction =
   | TimerIntervalReducerResetAction
   | TimerIntervalReducerRestartAction;
 
-export type TimerType = {
+export type Timer = {
   id: string;
   numIterations: number;
   timerIntervals: TimerInterval[];

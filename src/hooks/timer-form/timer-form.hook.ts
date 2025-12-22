@@ -1,10 +1,10 @@
 import { useReducer } from "react";
 
 import { useTimersContext } from "@/context";
-import type { TimerInterval, TimerType } from "@/types";
+import type { Timer, TimerInterval } from "@/types";
 import { generateRandomUUID } from "@/utils";
 
-export function useTimerForm(initialValue?: TimerType) {
+export function useTimerForm(initialValue?: Timer) {
   const [timers, setTimers] = useTimersContext();
 
   const [state, dispatch] = useReducer(timerFormReducer, {
@@ -64,7 +64,7 @@ type TimerFormReducerAction =
       type: "update-title";
     };
 
-function timerFormReducer(state: TimerType, action: TimerFormReducerAction) {
+function timerFormReducer(state: Timer, action: TimerFormReducerAction) {
   switch (action.type) {
     case "update-num-iterations":
       return {

@@ -2,11 +2,11 @@
 
 import { createContext } from "react";
 
-import type { TimerType } from "@/types";
+import type { Timer } from "@/types";
 
 export type TimersContextType = {
-  timers: TimerType[];
-  updateTimers(timers: TimerType[]): void;
+  timers: Timer[];
+  updateTimers(timers: Timer[]): void;
 };
 
 export const TimersContext = createContext<Partial<TimersContextType>>({});
