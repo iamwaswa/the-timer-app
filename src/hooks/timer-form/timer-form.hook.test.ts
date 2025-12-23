@@ -29,7 +29,7 @@ it("should initialize with a default state when no initial value is provided", (
       {
         id: id,
         duration: 60,
-        title: "New interval",
+        title: "New timer interval",
       },
     ],
   });
@@ -134,7 +134,7 @@ it("should save a new timer to localStorage if it's a new timer", () => {
       {
         id: id2,
         duration: 60,
-        title: "New interval",
+        title: "New timer interval",
       },
     ],
   };

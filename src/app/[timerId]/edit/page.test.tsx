@@ -42,7 +42,7 @@ it("should render the edit timer form as expected", () => {
 
   expect(screen.getByRole("heading", { level: 1, name: "Edit Timer" })).toBeInTheDocument();
   expect(screen.getByRole("spinbutton", { name: "Number of iterations" })).toBeInTheDocument();
-  expect(screen.getAllByRole("button", { name: "Delete timer" })).toHaveLength(timers[0].timerIntervals.length);
+  expect(screen.getAllByRole("button", { name: "Delete Timer" })).toHaveLength(timers[0].timerIntervals.length);
   expect(screen.getByRole("button", { name: "Add Timer" })).toBeInTheDocument();
   expect(screen.getByRole("button", { name: "Update Timer" })).toBeInTheDocument();
 });

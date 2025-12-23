@@ -19,7 +19,7 @@ export function TimerIntervalFormFields({ timerIntervals, updateTimerIntervals }
         {timerIntervals.map((timerIntervalEntry) => (
           <Box key={timerIntervalEntry.id} sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
             <TextField
-              label="Title"
+              label="Label"
               required={true}
               sx={{ flexGrow: 1 }}
               type="text"
@@ -36,7 +36,7 @@ export function TimerIntervalFormFields({ timerIntervals, updateTimerIntervals }
               }
             />
             <TextField
-              label="Initial Duration (seconds)"
+              label="Duration (seconds)"
               required={true}
               sx={{ flexGrow: 1 }}
               type="number"
@@ -65,7 +65,7 @@ export function TimerIntervalFormFields({ timerIntervals, updateTimerIntervals }
                 )
               }
             >
-              Delete timer
+              Delete Timer
             </Button>
           </Box>
         ))}
@@ -79,7 +79,7 @@ export function TimerIntervalFormFields({ timerIntervals, updateTimerIntervals }
             {
               id: generateRandomUUID(),
               duration: 60,
-              title: "New interval",
+              title: "New timer interval",
             },
           ])
         }

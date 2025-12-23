@@ -15,7 +15,7 @@ export function useTimerForm(initialValue?: Timer) {
       {
         id: generateRandomUUID(),
         duration: 60,
-        title: "New interval",
+        title: "New timer interval",
       },
     ],
   });

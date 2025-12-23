@@ -7,7 +7,7 @@ beforeEach(() => {
   vi.resetAllMocks();
 });
 
-it("should render the delete timer prompt with the correct title", () => {
+it("should render the Delete Timer prompt with the correct title", () => {
   const timers = [
     {
       id: "1",
