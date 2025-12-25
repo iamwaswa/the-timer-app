@@ -1,93 +1,166 @@
 import { render, screen } from "@testing-library/react";
 
-import { useGetTimersContext } from "@/context";
-import { useGetItemHeight } from "@/hooks";
+import { TimersContext } from "@/context";
+import type { Timer } from "@/types";
 
 import { Timers, TimersClientOnlyComponent } from "./timers";
 
-vi.mock("@/context", () => ({
-  ...vi.importActual("@/context"),
-  useGetTimersContext: vi.fn(),
-}));
+it.each([true, false])("should render as expected when timers exist = %s", (hasTimers) => {
+  const timers: Timer[] = hasTimers
+    ? [
+        {
+          id: "1",
+          numIterations: 1,
+          timerIntervals: [],
+          title: "Timer 1",
+        },
+        {
+          id: "2",
+          numIterations: 2,
+          timerIntervals: [
+            {
+              id: "1",
+              duration: 10,
+              title: "Interval 1",
+            },
+          ],
+          title: "Timer 2",
+        },
+        {
+          id: "3",
+          numIterations: 3,
+          timerIntervals: [
+            {
+              id: "1",
+              duration: 10,
+              title: "Interval 1",
+            },
+            {
+              id: "2",
+              duration: 20,
+              title: "Interval 2",
+            },
+          ],
+          title: "Timer 3",
+        },
+      ]
+    : [];
+  const parentElementId = "parent-element-id";
+  const height = 100;
 
-const useGetTimersContextMock = vi.mocked(useGetTimersContext);
+  render(
+    <TimersContext.Provider value={{ timers, updateTimers: vi.fn() }}>
+      <div className="MuiGrid-container" id={parentElementId}>
+        <div className="MuiGrid-root">
+          <div>
+            <div className="MuiPaper-root" style={{ height }} />
+          </div>
+          <div />
+        </div>
+        <Timers parentElementId={parentElementId} />
+      </div>
+    </TimersContext.Provider>,
+  );
 
-vi.mock("@/hooks", () => ({
-  ...vi.importActual("@/hooks"),
-  useGetItemHeight: vi.fn(),
-}));
-
-const useGetItemHeightMock = vi.mocked(useGetItemHeight);
-
-vi.mock("../add-new-timer", () => ({
-  ...vi.importActual("../add-new-timer"),
-  AddNewTimer: () => <div data-testid="add-new-timer" />,
-}));
-
-vi.mock("../timer-link", () => ({
-  ...vi.importActual("../timer-link"),
-  TimerLink: () => <div data-testid="timer-link" />,
-}));
-
-beforeEach(() => {
-  vi.resetAllMocks();
+  if (hasTimers) {
+    expect(screen.getAllByRole("link", { name: "Edit" }).map((element) => element.getAttribute("href"))).toEqual(
+      timers.map((timer) => `/${timer.id}/edit`),
+    );
+    expect(screen.getAllByRole("link", { name: "Delete" }).map((element) => element.getAttribute("href"))).toEqual(
+      timers.map((timer) => `/${timer.id}/delete`),
+    );
+  } else {
+    expect(screen.queryAllByRole("link", { name: "Edit" })).toHaveLength(0);
+    expect(screen.queryAllByRole("link", { name: "Delete" })).toHaveLength(0);
+  }
+  timers.forEach((timer) => {
+    expect(
+      screen.getByRole("link", {
+        name: `Number of iterations: ${timer.numIterations} ${timer.timerIntervals.map((timerInterval) => `${timerInterval.title} - ${timerInterval.duration} seconds`).join(" ")}`.trim(),
+      }),
+    ).toHaveAttribute("href", `/${timer.id}`);
+  });
+  expect(screen.getByRole("link", { name: "Add new timer" })).toHaveAttribute("href", "/new");
 });
 
-it("should render a list of timers and the add new timer button", () => {
-  const timers = [
-    {
-      id: "1",
-      numIterations: 1,
-      timerIntervals: [],
-      title: "Timer 1",
-    },
-    {
-      id: "2",
-      numIterations: 2,
-      timerIntervals: [],
-      title: "Timer 2",
-    },
-  ];
-  useGetTimersContextMock.mockReturnValue(timers);
-  useGetItemHeightMock.mockReturnValue(100);
+it.each([true, false])(
+  "should render the client-only component asynchronously as expected when timers exist = %s",
+  async (hasTimers) => {
+    const timers: Timer[] = hasTimers
+      ? [
+          {
+            id: "1",
+            numIterations: 1,
+            timerIntervals: [],
+            title: "Timer 1",
+          },
+          {
+            id: "2",
+            numIterations: 2,
+            timerIntervals: [
+              {
+                id: "1",
+                duration: 10,
+                title: "Interval 1",
+              },
+            ],
+            title: "Timer 2",
+          },
+          {
+            id: "3",
+            numIterations: 3,
+            timerIntervals: [
+              {
+                id: "1",
+                duration: 10,
+                title: "Interval 1",
+              },
+              {
+                id: "2",
+                duration: 20,
+                title: "Interval 2",
+              },
+            ],
+            title: "Timer 3",
+          },
+        ]
+      : [];
+    const parentElementId = "parent-element-id";
+    const height = 100;
 
-  render(<Timers parentElementId="test-parent" />);
+    render(
+      <TimersContext.Provider value={{ timers, updateTimers: vi.fn() }}>
+        <div className="MuiGrid-container" id={parentElementId}>
+          <div className="MuiGrid-root">
+            <div>
+              <div className="MuiPaper-root" style={{ height }} />
+            </div>
+            <div />
+          </div>
+          <TimersClientOnlyComponent parentElementId={parentElementId} />
+        </div>
+      </TimersContext.Provider>,
+    );
 
-  expect(screen.getAllByTestId("timer-link")).toHaveLength(timers.length);
-  expect(screen.getByTestId("add-new-timer")).toBeInTheDocument();
-});
-
-it("should render no timers if there are none", () => {
-  useGetTimersContextMock.mockReturnValue([]);
-  useGetItemHeightMock.mockReturnValue(100);
-
-  render(<Timers parentElementId="test-parent" />);
-
-  expect(screen.queryAllByTestId("timer-link")).toHaveLength(0);
-  expect(screen.getByTestId("add-new-timer")).toBeInTheDocument();
-});
-
-it("should render the client-only component asynchronously", async () => {
-  const timers = [
-    {
-      id: "1",
-      numIterations: 1,
-      timerIntervals: [],
-      title: "Timer 1",
-    },
-    {
-      id: "2",
-      numIterations: 2,
-      timerIntervals: [],
-      title: "Timer 2",
-    },
-  ];
-  useGetTimersContextMock.mockReturnValue(timers);
-  useGetItemHeightMock.mockReturnValue(100);
-
-  render(<TimersClientOnlyComponent parentElementId="test-parent" />);
-
-  // Use findBy queries to wait for the async component to render
-  expect(await screen.findAllByTestId("timer-link")).toHaveLength(timers.length);
-  expect(await screen.findByTestId("add-new-timer")).toBeInTheDocument();
-});
+    // Use findBy queries to wait for the async component to render
+    if (hasTimers) {
+      expect(
+        (await screen.findAllByRole("link", { name: "Edit" })).map((element) => element.getAttribute("href")),
+      ).toEqual(timers.map((timer) => `/${timer.id}/edit`));
+      expect(
+        (await screen.findAllByRole("link", { name: "Delete" })).map((element) => element.getAttribute("href")),
+      ).toEqual(timers.map((timer) => `/${timer.id}/delete`));
+    } else {
+      expect(screen.queryAllByRole("link", { name: "Edit" })).toHaveLength(0);
+      expect(screen.queryAllByRole("link", { name: "Delete" })).toHaveLength(0);
+    }
+    timers.forEach(async (timer) => {
+      expect(
+        await screen.findByRole("link", {
+          name: `Number of iterations: ${timer.numIterations} ${timer.timerIntervals.map((timerInterval) => `${timerInterval.title} - ${timerInterval.duration} seconds`).join(" ")}`.trim(),
+        }),
+      ).toHaveAttribute("href", `/${timer.id}`);
+    });
+    expect(await screen.findByRole("link", { name: "Add new timer" })).toHaveAttribute("href", "/new");
+  },
+);
